@@ -11,7 +11,7 @@ Requirements
 ### GitHub secrets
 
 To adhere to security concerns, GitHub secrets is leveraged to handle sensitive information.
-Please look at the documentation on how to set this up
+[Please look at the documentation on how to set this up](docs/SECRETS.md)
 
 ### The Google Form
 
