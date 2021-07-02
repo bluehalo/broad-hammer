@@ -8,6 +8,11 @@ Requirements
 
 - Admin access to the Google Form provided to the submitter
 
+### GitHub secrets
+
+To adhere to security concerns, GitHub secrets is leveraged to handle sensitive information.
+Please look at the documentation on how to set this up
+
 ### The Google Form
 
 Google Forms have a Script Editor where you need to inject the code from the `google-form`.
