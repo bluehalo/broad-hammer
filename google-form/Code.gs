@@ -1,6 +1,7 @@
 /**
  * Sends all submission data over to a Cloud Function to be processed
  */
+// TODO: replace this placeholder with your URL
 const URL =
   "https://us-east4-gcp-testing-308520.cloudfunctions.net/onFormSubmit";
 
