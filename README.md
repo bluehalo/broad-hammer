@@ -1,12 +1,14 @@
 # AnVIL Data Ingestion
 
-Automation for AnVIL data submitters to self service their code before manual review by QC
+> Automation for AnVIL data submitters to self service their code before manual review by QC
 
 ## Getting Started
 
 Requirements
 
 - Admin access to the Google Form provided to the submitter
+- A service account with the following permissions:
+  - `iam.serviceAccountUser`
 
 ### GitHub secrets
 
@@ -21,7 +23,7 @@ The code is in `gs` format, which is based on JavaScript.
 The service account will be automatically created [`appsdev-apps-dev-script-auth@system.gserviceaccount.com`](https://developers.google.com/apps-script/guides/cloud-platform-projects#default_cloud_platform_projects) and used for deployment.
 Complete the setup on the account that you want error messages to report to.
 
-> NOTE: Create the Cloud Function in GCP to get the HTTP URL before proceeding
+**NOTE: Create the Cloud Function in GCP to get the HTTP URL before proceeding**
 
 1. In the Triggers tab, add a Trigger with the following settings
 

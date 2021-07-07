@@ -1,0 +1,19 @@
+{
+  "name": "onformsubmit-http",
+  "version": "0.0.1",
+  "dependencies": {
+    "@google-cloud/firestore": "4.10.1",
+    "@google-cloud/pubsub": "2.10.0",
+    "axios": "^0.21.1"
+  },
+  "main": "index.js",
+  "scripts": {
+    "start": "npx functions-framework --target=onFormSubmit"
+  },
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "devDependencies": {
+    "@google-cloud/functions-framework": "^1.9.0"
+  }
+}

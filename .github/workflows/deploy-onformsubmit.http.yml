@@ -1,0 +1,38 @@
+# Deploys the onFormSubmit to GCP
+name: Deploy onFormSubmit
+
+# TODO: change this to your deployment strategy (e.g. on release)
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        # TODO: change this to your local folder
+        working-directory: onformsubmit-http
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Setup gcloud
+        env:
+          GCP_PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
+          GCP_SA_KEY: ${{ secrets.GCP_SA_KEY }}
+        uses: google-github-actions/setup-gcloud@master
+        with:
+          project_id: "$GCP_PROJECT_ID"
+          service_account_key: "$GCP_SA_KEY"
+          export_default_credentials: true
+
+      - name: Deploy
+        env:
+          GCP_REGION: ${{ secrets.GCP_REGION }}
+        run: |
+          gcloud functions deploy onFormSubmit \
+            -- trigger-http \
+            -- region="$GCP_REGION" \
+            -- runtime=nodejs12 \
+            -- memory=128MB

@@ -1,3 +1,6 @@
 # secrets
 .env
 creds.json
+
+# dev
+node_modules
