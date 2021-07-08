@@ -4,7 +4,7 @@
 
 ## Secrets
 
-Make sure that you have [all secrets](../../docs/SECRETS.md) inside your secret manager for deployment to work properly
+Make sure that you have [all secrets](../../docs/SECRETS.md) inside your secret manager for GitHub Actions deployment to work properly
 
 ## Deployment Scripts
 
