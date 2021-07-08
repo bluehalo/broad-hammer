@@ -3,8 +3,8 @@
   "version": "0.0.1",
   "dependencies": {
     "@google-cloud/firestore": "4.10.1",
-    "@google-cloud/pubsub": "2.10.0",
-    "axios": "^0.21.1"
+    "axios": "^0.21.1",
+    "googleapis": "^81.0.0"
   },
   "main": "index.js",
   "scripts": {
