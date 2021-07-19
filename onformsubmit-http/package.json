@@ -2,7 +2,6 @@
   "name": "onformsubmit-http",
   "version": "0.0.1",
   "dependencies": {
-    "@google-cloud/firestore": "4.10.1",
     "axios": "^0.21.1",
     "googleapis": "^81.0.0"
   },
