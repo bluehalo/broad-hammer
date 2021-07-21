@@ -3,13 +3,16 @@
   "version": "0.0.1",
   "dependencies": {
     "axios": "^0.21.1",
-    "googleapis": "^81.0.0"
+    "googleapis": "^81.0.0",
+    "jest": "^27.0.6"
   },
   "main": "index.js",
   "scripts": {
-    "start": "npx functions-framework --target=onFormSubmit"
+    "test": "jest .",
+    "start": "npx functions-framework --target=onFormSubmit",
+    "sonar": "npx sonar-scanner -Dsonar.projectKey=Hammer -Dsonar.sources=. -Dsonar.host.url=http://localhost:9000 -Dsonar.login=8ab67536372297160f868a39d00fcf7b486983fb"
   },
-  "author": "",
+  "author": "Asymmetrik, Ltd.",
   "license": "ISC",
   "description": "",
   "devDependencies": {
