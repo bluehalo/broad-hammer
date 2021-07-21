@@ -1,6 +1,6 @@
 const Auth = require("./auth");
 
-const CREDS_FILE = "hammer_creds.json";
+const CREDS_FILE = "creds.json";
 
 describe("Auth Tests", () => {
   it("should get OAuth2 token", async () => {
