@@ -21,7 +21,10 @@ class Auth {
     this._token = undefined;
   }
 
-  /** Requests Google's OAuth2 to get a token */
+  /**
+   * Requests Google's OAuth2 to get a token
+   * @returns {string} The access token
+   */
   requestAccessToken = async () => {
     // DEV: uncomment scopes as needed
     const oAuth2Scopes = [

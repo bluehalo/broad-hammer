@@ -6,7 +6,7 @@
 /** Holds and processes submission message */
 class Submission {
   /**
-   * @param {string} message [payload of http request]
+   * @param {Object<JSON>} message [payload of http request]
    */
   constructor(message) {
     try {
