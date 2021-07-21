@@ -10,7 +10,7 @@ class Auth {
   /**
    * @param {string} credsFile [relative path to creds file]
    */
-  constructor({ credsFile = "../creds.json" } = {}) {
+  constructor(credsFile) {
     // validate creds file
     if (fs.existsSync(credsFile)) {
       this._credsFile = credsFile;
@@ -45,7 +45,7 @@ class Auth {
 
   /** Reads client_email from credsFile */
   clientEmail = () => {
-    const creds = require(this._credsFile);
+    const creds = require(`../${this._credsFile}`);
     return creds.client_email;
   };
 

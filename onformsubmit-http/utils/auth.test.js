@@ -1,8 +1,8 @@
 const Auth = require("./auth");
 
-const CREDS_FILE = "../creds.json";
+const CREDS_FILE = "hammer_creds.json";
 
-describe("Sanity Test", () => {
+describe("Auth Tests", () => {
   it("should get OAuth2 token", async () => {
     // create auth instance
     const auth = new Auth(CREDS_FILE);
@@ -14,7 +14,7 @@ describe("Sanity Test", () => {
     expect(auth.token()).toBeDefined();
   });
 
-  it("should parse client_email from creds file", async () => {
+  it("should parse client_email from creds file", () => {
     // create auth instance
     const auth = new Auth(CREDS_FILE);
 
@@ -22,5 +22,11 @@ describe("Sanity Test", () => {
     expect(auth.clientEmail()).toBe(
       "hammer@gcp-testing-308520.iam.gserviceaccount.com"
     );
+  });
+
+  it("should throw Error", () => {
+    expect(() => {
+      new Auth(null);
+    }).toThrow();
   });
 });
