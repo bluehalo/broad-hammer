@@ -38,6 +38,7 @@ class Auth {
       });
 
       this._token = await googleAuthClient.getAccessToken();
+      return this._token;
     } catch (e) {
       throw new Error(e);
     }

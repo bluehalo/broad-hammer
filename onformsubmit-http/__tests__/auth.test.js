@@ -1,4 +1,4 @@
-const Auth = require("./auth");
+const Auth = require("../utils/auth");
 
 const CREDS_FILE = "creds.json";
 

@@ -1,13 +1,17 @@
 /**
  * Handles Google Form submission answers
  */
-const google = require("googleapis");
 const axios = require("axios").default;
+
+const Auth = require("./utils/auth");
+const Submission = require("./utils/submission");
 
 // default consts
 // make changes as needed
-const SERVICE_ACCOUNT_KEY = "./creds.json";
-const FIRECLOUD_URL = "https://api.firecloud.org";
+const SERVICE_ACCOUNT_KEY = "creds.json";
+// const FIRECLOUD_URL = "https://api.firecloud.org";
+const FIRECLOUD_URL =
+  "https://firecloud-orchestration.dsde-dev.broadinstitute.org/";
 const ADMIN_EMAILS = [
   "vreeves@broadinstitute.org",
   "candace@broadinstitute.org",
@@ -17,59 +21,35 @@ const ADMIN_EMAILS = [
 exports.onFormSubmit = async (req, res) => {
   const message = req.body;
 
-  // parse creds file
-  let serviceAccountEmail;
+  // initialize axios with token
+  let auth, serviceAccountEmail;
   try {
-    const creds = require(SERVICE_ACCOUNT_KEY);
-    serviceAccountEmail = creds.client_email;
-  } catch (err) {
-    console.error(`[Error] Could not read creds file: ${err}`);
-    return res.status(500).send(`[500] Could not read creds file: {err}`);
+    auth = new Auth(SERVICE_ACCOUNT_KEY);
+    serviceAccountEmail = auth.clientEmail();
+
+    const bearerToken = await auth.requestAccessToken();
+    axios.defaults.baseURL = FIRECLOUD_URL;
+    axios.defaults.headers.common["Authorization"] = `Bearer ${bearerToken}`;
+  } catch (e) {
+    console.error(`[500] Failed to initialize Auth: ${e}`);
+    return res.status(500).send(`[Internal Server Error] ${e}`);
   }
 
   // extract data from submission message
-  let submissionTime, email, editLink, questions, responses;
+  let submission;
   try {
-    submissionTime = message.submissionTime;
-    email = message.email;
-    editLink = message.editLink;
-    questions = JSON.parse(message.questions);
-    responses = JSON.parse(message.responses);
-  } catch (err) {
-    console.error(`[Error] Submission data malformed: ${err}`);
-    return res.status(400).send(`[400] Bad Request: ${err}`);
-  }
-
-  // log data received
-  console.info("--Data Received--");
-  console.info(`${submissionTime}: ${email}`);
-  console.info(`  ${editLink}`);
-  // TODO: remove question type?
-  const questionAndAnswerList = [];
-  for (let i = 0; i < questions.length; i++) {
-    const qna = `${questions[i]}: ${responses[i]}`;
-    questionAndAnswerList.push(qna);
-    console.info(qna);
+    submission = new Submission(message);
+  } catch (e) {
+    console.error(`[400] Failed to parse submission message: ${e}`);
+    return res.status(400).send(`[Bad Request] ${e}`);
   }
 
   // TODO: fill this out some more
   // extract neccessary data from submission message
   const billingProject = "anvil-dev-fhir2";
   const workspaceName = "hammer_test_space";
-  const groupName = "AUTH_Asym_Test";
-  const submitterEmail = email;
-
-  // setup auth
-  try {
-    const bearerToken = await getOAuth2Token();
-    // TODO: remove this client
-    // console.log(bearerToken);
-    axios.defaults.baseURL = FIRECLOUD_URL;
-    axios.defaults.headers.common["Authorization"] = `Bearer ${bearerToken}`;
-  } catch (err) {
-    console.error(`[Error] Could not authorize credentials: ${err}`);
-    return res.status(401).send(`[401] Unauthorized: ${err}`);
-  }
+  const groupName = "AUTH_Hammer";
+  const submitterEmail = submission.email();
 
   // create and add submitter + anvil-admins to auth domain
   // POST /api/groups/${groupName}
@@ -82,22 +62,12 @@ exports.onFormSubmit = async (req, res) => {
       groupEmail = res.data.groupEmail;
     });
 
-    // add admin emails
-    ADMIN_EMAILS.forEach(async (email) => {
-      console.info(`[LOG] Adding ${email} to group ${groupName}`);
-      await axios.put(`/api/groups/${groupName}/admin/${email}`);
-    });
-
-    // add submitter email
-    console.info(`[LOG] Adding ${submitterEmail} to group ${groupName}`);
-    await axios.put(`/api/groups/${groupName}/admin/${submitterEmail}`);
-
-    // add service account email
-    console.info(`[LOG] Adding ${serviceAccountEmail} to group ${groupName}`);
-    await axios.put(`/api/groups/${groupName}/admin/${serviceAccountEmail}`);
+    // add necessary users to group
+    const authEmails = [submitterEmail, serviceAccountEmail, ...ADMIN_EMAILS];
+    addToAuthDomain(authEmails, groupName);
   } catch (err) {
-    console.error(`[Error] /api/groups call: ${err}`);
-    return res.status(400).send(`[400] Bad Request: ${err}`);
+    console.error(`[400] Failed to create group: ${err}`);
+    return res.status(400).send(`[Bad Request] ${err}`);
   }
 
   // create and share workspace
@@ -166,26 +136,16 @@ exports.onFormSubmit = async (req, res) => {
 };
 
 /**
- * Retrieves the access token for Firecloud API calls
+ * Adds accounts to auth domain
  */
-const getOAuth2Token = async () => {
-  // auth params
-  const oAuth2Scopes = [
-    // "openid",
-    "email",
-    "profile",
-    // "https://www.googleapis.com/auth/cloud-billing",
-  ];
-
-  // get access token
+const addToAuthDomain = async (emails, groupName) => {
   try {
-    const googleAuthClient = new google.Auth.GoogleAuth({
-      keyFile: SERVICE_ACCOUNT_KEY,
-      scopes: oAuth2Scopes,
+    emails.forEach(async (email) => {
+      console.info(`[LOG] Adding ${email} to group ${groupName}`);
+      await axios.put(`/api/groups/${groupName}/admin/${email}`);
     });
-
-    return await googleAuthClient.getAccessToken();
   } catch (err) {
-    throw new Error(err);
+    console.error(`[Error] Failed to POST email to auth domain: ${err}`);
+    return res.status(400).send(`[400] Bad Request: ${err}`);
   }
 };
