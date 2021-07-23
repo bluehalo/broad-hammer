@@ -5,13 +5,14 @@ const axios = require("axios").default;
 
 const Auth = require("./utils/auth");
 const Submission = require("./utils/submission");
+const Firecloud = require("./utils/firecloud");
 
 // default consts
 // make changes as needed
 const SERVICE_ACCOUNT_KEY = "creds.json";
-// const FIRECLOUD_URL = "https://api.firecloud.org";
-const FIRECLOUD_URL =
-  "https://firecloud-orchestration.dsde-dev.broadinstitute.org/";
+const FIRECLOUD_URL = "https://api.firecloud.org";
+// const FIRECLOUD_URL =
+//   "https://firecloud-orchestration.dsde-dev.broadinstitute.org/";
 const ADMIN_EMAILS = [
   "vreeves@broadinstitute.org",
   "candace@broadinstitute.org",
@@ -46,82 +47,85 @@ exports.onFormSubmit = async (req, res) => {
 
   // TODO: fill this out some more
   // extract neccessary data from submission message
+  const groupName = "AUTH_Hammer";
   const billingProject = "anvil-dev-fhir2";
   const workspaceName = "hammer_test_space";
-  const groupName = "AUTH_Hammer";
   const submitterEmail = submission.email();
 
-  // create and add submitter + anvil-admins to auth domain
+  // creates firecloud client
+  const firecloud = new Firecloud(axios);
+
+  // creates group and adds submitter + anvil-admins to group
   // POST /api/groups/${groupName}
   // PUT /api/groups/${groupName}/${role}/${email}
-  let groupEmail;
   try {
-    // create new group
-    console.info(`[LOG] Creating group ${groupName}`);
-    await axios.post(`/api/groups/${groupName}`).then((res) => {
-      groupEmail = res.data.groupEmail;
+    // create group
+    await firecloud.createGroup(groupName);
+    await firecloud.addUserToGroup(groupName, serviceAccountEmail, "admin");
+
+    // add anvil-admins to group
+    ADMIN_EMAILS.forEach(async (email) => {
+      await firecloud.addUserToGroup(groupName, email, "admin");
     });
 
-    // add necessary users to group
-    const authEmails = [submitterEmail, serviceAccountEmail, ...ADMIN_EMAILS];
-    addToAuthDomain(authEmails, groupName);
-  } catch (err) {
-    console.error(`[400] Failed to create group: ${err}`);
-    return res.status(400).send(`[Bad Request] ${err}`);
+    // submitter will need to be manually added as admin
+    await firecloud.addUserToGroup(groupName, submitterEmail);
+  } catch (e) {
+    console.error(`[400] Failed to create group: ${e}`);
+    return res.status(400).send(`[Bad Request] ${e}`);
   }
 
   // create and share workspace
   // POST /api/workspaces
   // PATCH /api/workspaces/${workspaceNamespace}/${workspaceName}/acl
   try {
-    // create workspace request
-    const workspaceRequest = {
-      namespace: billingProject,
-      name: workspaceName,
-      authorizationDomain: [
-        {
-          membersGroupName: groupName,
-        },
-      ],
-      attributes: {},
-      noWorkspaceOwner: false,
-    };
-    await axios.post("/api/workspaces", workspaceRequest).then((res) => {
-      console.log(res.data);
+    await firecloud.createWorkspace(workspaceName, billingProject, groupName);
+    await firecloud.shareWorkspace(
+      workspaceName,
+      billingProject,
+      serviceAccountEmail,
+      "OWNER"
+    );
+
+    // add anvil-admins to group
+    ADMIN_EMAILS.forEach(async (email) => {
+      await firecloud.addUserToWorkspace(
+        workspaceName,
+        billingProject,
+        email,
+        "OWNER"
+      );
     });
 
-    // create share request
-    const aclRequest = [
-      {
-        email: groupEmail,
-        accessLevel: "OWNER",
-        canShare: true,
-        canCompute: true,
-      },
-    ];
-    await axios
-      .patch(
-        "/api/workspaces/anvil-dev-fhir2/hammer_test_space/acl",
-        aclRequest
-      )
-      .then((res) => {
-        console.log(res.data);
-      });
+    // add submitter as read-only
+    await firecloud.addUserToWorkspace(
+      workspaceName,
+      billingProject,
+      submitterEmail,
+      "READER"
+    );
   } catch (err) {
     console.error(err);
     console.error(`[Error] Failed to create workspace: ${err}`);
     return res.status(400).send(`[400] Bad Request: ${err}`);
   }
 
-  // TODO: remove service account from workspace/auth domain
+  // TODO: remove service account from auth domain
+  // user must manually remove service account from workspace
   try {
-    // const credsFile = require(SERVICE_ACCOUNT_KEY);
-    // console.info(
-    //   `[LOG] Removing ${credsFile.client_email} from group ${groupName}`
-    // );
-    // await axios.delete(
-    //   `/api/groups/${groupName}/admin/${credsFile.client_email}`
-    // );
+    // remove from auth domain
+    await firecloud.removeUserFromGroup(
+      groupName,
+      serviceAccountEmail,
+      "admin"
+    );
+
+    // remove from workspace
+    await firecloud.removeUserFromWorkspace(
+      workspaceName,
+      billingProject,
+      serviceAccountEmail
+    );
   } catch (err) {
     console.error(
       `[Error] Failed to remove ${serviceAccountEmail} from workspace: ${err}`
@@ -133,19 +137,4 @@ exports.onFormSubmit = async (req, res) => {
   const msg = "Completed Run!";
   console.log(`[Success] ${msg}`);
   return res.status(200).send(`[200] OK: ${msg}`);
-};
-
-/**
- * Adds accounts to auth domain
- */
-const addToAuthDomain = async (emails, groupName) => {
-  try {
-    emails.forEach(async (email) => {
-      console.info(`[LOG] Adding ${email} to group ${groupName}`);
-      await axios.put(`/api/groups/${groupName}/admin/${email}`);
-    });
-  } catch (err) {
-    console.error(`[Error] Failed to POST email to auth domain: ${err}`);
-    return res.status(400).send(`[400] Bad Request: ${err}`);
-  }
 };
