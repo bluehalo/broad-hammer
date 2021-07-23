@@ -93,15 +93,22 @@ class Firecloud {
 
   /**
    * Adds a user to a workspace
+   * - accessLevel: ["OWNER", "READER", "WRITER", "NO ACCESS"]
    * @param {string} workspaceName [the name of the workspace]
-   * @param {string} billingProject [the billing project to use]
+   * @param {string} billingProject [the billing project used]
    * @param {string} userEmail [the email of the user/group to add]
+   * @param {string} [accessLevel='READER'] [the role to assign to the user]
    */
-  addUserToWorkspace = async (workspaceName, billingProject, userEmail) => {
+  addUserToWorkspace = async (
+    workspaceName,
+    billingProject,
+    userEmail,
+    accessLevel = "READER"
+  ) => {
     const aclRequest = [
       {
         email: userEmail,
-        accessLevel: "OWNER",
+        accessLevel: accessLevel,
         canShare: true,
         canCompute: true,
       },
@@ -111,6 +118,37 @@ class Firecloud {
       await this._axios.patch(
         `/api/workspaces/${billingProject}/${workspaceName}/acl?inviteUsersNotFound=true`,
         aclRequest
+      );
+    } catch (e) {
+      throw new Error(e);
+    }
+  };
+
+  /**
+   * Removes a user from a workspace
+   *
+   * @param {string} workspaceName [the name of the workspace]
+   * @param {string} billingProject [the billing project used]
+   * @param {string} userEmail [the email of the user/group to remove]
+   */
+  removeUserFromWorkspace = async (
+    workspaceName,
+    billingProject,
+    userEmail
+  ) => {
+    const aclRemoveRequest = [
+      {
+        email: userEmail,
+        accessLevel: "NO ACCESS",
+        canShare: false,
+        canCompute: false,
+      },
+    ];
+
+    try {
+      await this._axios.patch(
+        `/api/workspaces/${billingProject}/${workspaceName}/acl`,
+        aclRemoveRequest
       );
     } catch (e) {
       throw new Error(e);

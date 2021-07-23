@@ -63,34 +63,74 @@ describe("Auth Tests", () => {
     // const workspaceName = `HAMMER_TEST_${Math.floor(Math.random() * 100)}`;
     const workspaceName = "HAMMER_TEST";
 
+    // create workspace
     await firecloud.createWorkspace(
       workspaceName,
       "general-dev-billing-account",
       "HAMMER_Jest"
     );
+
+    // add users
     await firecloud.addUserToWorkspace(
       workspaceName,
       "general-dev-billing-account",
-      "HAMMER_Jest@dev.test.firecloud.org"
+      "foo@bar.com"
+    );
+    await firecloud.addUserToWorkspace(
+      workspaceName,
+      "general-dev-billing-account",
+      "f@b.com",
+      "WRITER"
+    );
+
+    // remove users
+    await firecloud.removeUserFromWorkspace(
+      workspaceName,
+      "general-dev-billing-account",
+      "foo@bar.com"
     );
 
     expect(await workspacePOSTSpy).toHaveBeenCalledWith("/api/workspaces", {
       attributes: {},
-      authorizationDomain: [{ membersGroupName: "HAMMER_Jest" }],
       name: workspaceName,
+      authorizationDomain: [{ membersGroupName: "HAMMER_Jest" }],
       namespace: "general-dev-billing-account",
       noWorkspaceOwner: false,
     });
-    expect(await workspacePATCHSpy).toHaveBeenCalledWith(
-      `/api/workspaces/general-dev-billing-account/${workspaceName}/acl?inviteUsersNotFound=true`,
+    expect(await workspacePATCHSpy.mock.calls).toEqual([
       [
-        {
-          email: "HAMMER_Jest@dev.test.firecloud.org",
-          accessLevel: "OWNER",
-          canShare: true,
-          canCompute: true,
-        },
-      ]
-    );
+        `/api/workspaces/general-dev-billing-account/${workspaceName}/acl?inviteUsersNotFound=true`,
+        [
+          {
+            email: "foo@bar.com",
+            accessLevel: "READER",
+            canShare: true,
+            canCompute: true,
+          },
+        ],
+      ],
+      [
+        `/api/workspaces/general-dev-billing-account/${workspaceName}/acl?inviteUsersNotFound=true`,
+        [
+          {
+            email: "f@b.com",
+            accessLevel: "WRITER",
+            canShare: true,
+            canCompute: true,
+          },
+        ],
+      ],
+      [
+        `/api/workspaces/general-dev-billing-account/${workspaceName}/acl`,
+        [
+          {
+            email: "foo@bar.com",
+            accessLevel: "NO ACCESS",
+            canShare: false,
+            canCompute: false,
+          },
+        ],
+      ],
+    ]);
   });
 });
