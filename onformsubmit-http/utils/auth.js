@@ -2,7 +2,7 @@
  * Handles auth for calls to the API
  * @module Auth
  */
-const fs = require("fs");
+const { existsSync } = require("fs");
 const google = require("googleapis");
 
 /** Requests and holds tokens */
@@ -12,7 +12,7 @@ class Auth {
    */
   constructor(credsFile) {
     // validate creds file
-    if (fs.existsSync(credsFile)) {
+    if (existsSync(credsFile)) {
       this._credsFile = credsFile;
     } else {
       throw new Error(`Creds file ${credsFile} not found`);

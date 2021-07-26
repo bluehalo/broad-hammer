@@ -7,30 +7,29 @@ const Auth = require("./utils/auth");
 const Submission = require("./utils/submission");
 const Firecloud = require("./utils/firecloud");
 
-// default consts
-// make changes as needed
-const SERVICE_ACCOUNT_KEY = "creds.json";
-const FIRECLOUD_URL = "https://api.firecloud.org";
-// const FIRECLOUD_URL =
-//   "https://firecloud-orchestration.dsde-dev.broadinstitute.org/";
-const ADMIN_EMAILS = [
-  "vreeves@broadinstitute.org",
-  "candace@broadinstitute.org",
-  "ltran@asymmetrik.com",
-];
+// pull env vars
+const FIRECLOUD_URL = process.env.FIRECLOUD_URL;
+const SERVICE_ACCOUNT_KEY = process.env.SERVICE_ACCOUNT_KEY;
+const ADMIN_EMAILS = process.env.ADMIN_EMAILS.split(",");
 
 exports.onFormSubmit = async (req, res) => {
   const message = req.body;
 
-  // initialize axios with token
+  // initialize http client
+  const httpClient = axios.create({
+    baseURL: FIRECLOUD_URL,
+  });
+
+  // initialize auth with token
   let auth, serviceAccountEmail;
   try {
     auth = new Auth(SERVICE_ACCOUNT_KEY);
     serviceAccountEmail = auth.clientEmail();
 
     const bearerToken = await auth.requestAccessToken();
-    axios.defaults.baseURL = FIRECLOUD_URL;
-    axios.defaults.headers.common["Authorization"] = `Bearer ${bearerToken}`;
+    httpClient.defaults.headers.common[
+      "Authorization"
+    ] = `Bearer ${bearerToken}`;
   } catch (e) {
     console.error(`[500] Failed to initialize Auth: ${e}`);
     return res.status(500).send(`[Internal Server Error] ${e}`);
@@ -53,7 +52,7 @@ exports.onFormSubmit = async (req, res) => {
   const submitterEmail = submission.email();
 
   // creates firecloud client
-  const firecloud = new Firecloud(axios);
+  const firecloud = new Firecloud(httpClient);
 
   // creates group and adds submitter + anvil-admins to group
   // POST /api/groups/${groupName}

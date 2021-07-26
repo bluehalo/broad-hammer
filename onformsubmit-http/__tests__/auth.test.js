@@ -19,9 +19,7 @@ describe("Auth Tests", () => {
     const auth = new Auth(CREDS_FILE);
 
     // DEV: change this to creds file's client_email
-    expect(auth.clientEmail()).toBe(
-      "hammer@gcp-testing-308520.iam.gserviceaccount.com"
-    );
+    expect(auth.clientEmail()).toBe(process.env.authTestClientEmail);
   });
 
   it("should throw Error", () => {

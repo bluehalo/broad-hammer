@@ -6,10 +6,10 @@
 /** Sends HTTP requests */
 class Firecloud {
   /**
-   * @param {Object} axios [the configured http client]
+   * @param {Object} http [the configured http client]
    */
-  constructor(axios) {
-    this._axios = axios;
+  constructor(http) {
+    this._http = http;
 
     this._groupEmail = undefined;
   }
@@ -21,7 +21,7 @@ class Firecloud {
    */
   createGroup = async (groupName) => {
     try {
-      await this._axios.post(`/api/groups/${groupName}`).then((res) => {
+      await this._http.post(`/api/groups/${groupName}`).then((res) => {
         this._groupEmail = res.data.groupEmail;
       });
     } catch (e) {
@@ -45,7 +45,7 @@ class Firecloud {
    */
   addUserToGroup = async (groupName, userEmail, role = "member") => {
     try {
-      await this._axios.put(`/api/groups/${groupName}/${role}/${userEmail}`);
+      await this._http.put(`/api/groups/${groupName}/${role}/${userEmail}`);
     } catch (e) {
       throw new Error(e);
     }
@@ -59,7 +59,7 @@ class Firecloud {
    */
   removeUserFromGroup = async (groupName, userEmail, role = "member") => {
     try {
-      await this._axios.delete(`/api/groups/${groupName}/${role}/${userEmail}`);
+      await this._http.delete(`/api/groups/${groupName}/${role}/${userEmail}`);
     } catch (e) {
       throw new Error(e);
     }
@@ -85,7 +85,7 @@ class Firecloud {
     };
 
     try {
-      await this._axios.post("/api/workspaces", workspaceRequest);
+      await this._http.post("/api/workspaces", workspaceRequest);
     } catch (e) {
       throw new Error(e);
     }
@@ -115,7 +115,7 @@ class Firecloud {
     ];
 
     try {
-      await this._axios.patch(
+      await this._http.patch(
         `/api/workspaces/${billingProject}/${workspaceName}/acl?inviteUsersNotFound=true`,
         aclRequest
       );
@@ -146,7 +146,7 @@ class Firecloud {
     ];
 
     try {
-      await this._axios.patch(
+      await this._http.patch(
         `/api/workspaces/${billingProject}/${workspaceName}/acl`,
         aclRemoveRequest
       );
@@ -156,7 +156,7 @@ class Firecloud {
   };
 
   // Getters
-  axios = () => this._axios;
+  http = () => this._http;
   groupEmail = () => this._groupEmail;
 }
 
