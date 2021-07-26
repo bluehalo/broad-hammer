@@ -44,11 +44,10 @@ exports.onFormSubmit = async (req, res) => {
     return res.status(400).send(`[Bad Request] ${e}`);
   }
 
-  // TODO: fill this out some more
   // extract neccessary data from submission message
-  const groupName = "AUTH_Hammer";
-  const billingProject = "anvil-dev-fhir2";
-  const workspaceName = "hammer_test_space";
+  const groupName = submission.groupName();
+  const billingProject = submission.billingProject();
+  const workspaceName = submission.workspaceName();
   const submitterEmail = submission.email();
 
   // creates firecloud client
@@ -105,8 +104,8 @@ exports.onFormSubmit = async (req, res) => {
     );
   } catch (err) {
     console.error(err);
-    console.error(`[Error] Failed to create workspace: ${err}`);
-    return res.status(400).send(`[400] Bad Request: ${err}`);
+    console.error(`[400] Failed to create workspace: ${err}`);
+    return res.status(400).send(`[Bad Request] ${err}`);
   }
 
   // TODO: remove service account from auth domain
@@ -127,9 +126,9 @@ exports.onFormSubmit = async (req, res) => {
     );
   } catch (err) {
     console.error(
-      `[Error] Failed to remove ${serviceAccountEmail} from workspace: ${err}`
+      `[400] Failed to remove ${serviceAccountEmail} from workspace: ${err}`
     );
-    return res.status(400).send(`[400] Bad Request: ${err}`);
+    return res.status(400).send(`[Bad Request] ${err}`);
   }
 
   // TODO: Replace with meaningful message

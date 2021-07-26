@@ -21,6 +21,14 @@ class Submission {
       for (let i = 0; i < questions.length; i++) {
         this._qaMap.set(questions[i], responses[i]);
       }
+
+      // check for required fields
+      this._groupName = this._qaMap.get("Group Name");
+      this._billingProject = this._qaMap.get("Billing Project");
+      this._workspaceName = this._qaMap.get("Workspace Name");
+      if (!(this._groupName && this._billingProject && this._workspaceName)) {
+        throw new Error();
+      }
     } catch (e) {
       throw new Error("Submission data malformed");
     }
@@ -28,7 +36,7 @@ class Submission {
 
   /** Displays submission contents */
   display = () => {
-    console.info("--Submission Data--");
+    console.info("--Submission Metadata--");
     console.info(`${this._submissionTime}: ${this._email}`);
     console.info(`  ${this._editLink}`);
   };
@@ -37,7 +45,11 @@ class Submission {
   submissionTime = () => this._submissionTime;
   email = () => this._email;
   editLink = () => this._editLink;
+
   qaMap = () => this._qaMap;
+  groupName = () => this._groupName;
+  billingProject = () => this._billingProject;
+  workspaceName = () => this._workspaceName;
 }
 
 module.exports = Submission;

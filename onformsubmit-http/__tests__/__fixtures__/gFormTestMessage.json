@@ -1,0 +1,7 @@
+{
+  "submissionTime": "Sun Sept 19 2021 12:00:00 GMT-0400 (Eastern Daylight Time)",
+  "email": "foo@bar.com",
+  "editLink": "https://foobar.com",
+  "questions": "[\"Create Bucket?\",\"Bucket Name\",\"Q1: Multiple Choice\",\"Q2: Checkbox\",\"Q3: Paragraph\",\"Group Name\",\"Billing Project\",\"Workspace Name\"]",
+  "responses": "[\"True\",\"bucket\",\"C\",[\"Option 2\",\"other\"],\"obtuse, rubber goose, green moose, guava juice\",\"AUTH_Group\",\"billing-account\",\"hammer_test_space\"]"
+}
