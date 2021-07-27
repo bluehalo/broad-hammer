@@ -10,7 +10,7 @@
   "scripts": {
     "test": "source .env && jest .",
     "start": "source .env && npx functions-framework --target=onFormSubmit",
-    "sonar": "npx sonar-scanner -Dsonar.projectKey=Hammer -Dsonar.sources=. -Dsonar.host.url=http://localhost:9000 -Dsonar.login=8ab67536372297160f868a39d00fcf7b486983fb"
+    "sonar": "npx sonar-scanner -Dsonar.projectKey=Hammer -Dsonar.sources=. -Dsonar.host.url=http://localhost:9000 -Dsonar.login=9ef90bee0142f601c3c262e2b051eb76a661415d"
   },
   "author": "Asymmetrik, Ltd.",
   "license": "ISC",

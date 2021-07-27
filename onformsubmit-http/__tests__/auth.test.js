@@ -24,7 +24,11 @@ describe("Auth Tests", () => {
 
   it("should throw Error", () => {
     expect(() => {
-      new Auth(null);
+      try {
+        new Auth(null);
+      } catch (e) {
+        throw new Error(e.message);
+      }
     }).toThrow();
   });
 });

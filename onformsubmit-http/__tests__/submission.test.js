@@ -43,7 +43,11 @@ describe("Submission Tests", () => {
 
   it("should throw failure message when parsing", async () => {
     expect(() => {
-      new Submission(GFORM_FAIL_MESSAGE);
+      try {
+        new Submission(GFORM_FAIL_MESSAGE);
+      } catch (e) {
+        throw new Error(e.message);
+      }
     }).toThrow("Submission data malformed");
   });
 });

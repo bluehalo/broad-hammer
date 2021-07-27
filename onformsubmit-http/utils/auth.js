@@ -23,7 +23,7 @@ class Auth {
 
   /**
    * Requests Google's OAuth2 to get a token
-   * @returns {string} The access token
+   * @returns {Promise<string>} The access token
    */
   requestAccessToken = async () => {
     // DEV: uncomment scopes as needed
