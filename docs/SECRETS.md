@@ -8,10 +8,10 @@ As more secrets are added to the repository, they should be added to a list here
 
 | Name           | Maintainer | Description                                            |
 | -------------- | ---------- | ------------------------------------------------------ |
-| GCP_PROJECT_ID | luan-asym  | The project ID of the GCP Project (not project number) |
-| GCP_REGION     | luan-asym  | The region the Cloud Functions should be deployed to   |
-| GCP_SA_KEY     | luan-asym  | The service account credentials for the project        |
-| GCP_SA_EMAIL   | luan-asym  | The service accound email for the project              |
+| GCP_PROJECT_ID | --         | The project ID of the GCP Project (not project number) |
+| GCP_REGION     | --         | The region the Cloud Functions should be deployed to   |
+| GCP_SA_KEY     | --         | The service account credentials for the project        |
+| GCP_SA_EMAIL   | --         | The service accound email for the project              |
 
 ## Attaining Secrets
 

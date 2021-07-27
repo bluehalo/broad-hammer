@@ -1,0 +1,21 @@
+{
+  "name": "onformsubmit-http",
+  "version": "0.0.1",
+  "dependencies": {
+    "axios": "^0.21.1",
+    "googleapis": "^81.0.0",
+    "jest": "^27.0.6"
+  },
+  "main": "index.js",
+  "scripts": {
+    "test": "source .env && jest .",
+    "start": "source .env && npx functions-framework --target=onFormSubmit",
+    "sonar": "npx sonar-scanner -Dsonar.projectKey=Hammer -Dsonar.sources=. -Dsonar.host.url=http://localhost:9000 -Dsonar.login=9ef90bee0142f601c3c262e2b051eb76a661415d"
+  },
+  "author": "Asymmetrik, Ltd.",
+  "license": "ISC",
+  "description": "",
+  "devDependencies": {
+    "@google-cloud/functions-framework": "^1.9.0"
+  }
+}
