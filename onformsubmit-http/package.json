@@ -2,6 +2,7 @@
   "name": "onformsubmit-http",
   "version": "0.0.1",
   "dependencies": {
+    "@google-cloud/storage": "^5.12.0",
     "axios": "^0.21.1",
     "googleapis": "^81.0.0",
     "jest": "^27.0.6"
