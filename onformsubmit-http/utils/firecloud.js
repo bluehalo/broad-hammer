@@ -156,8 +156,12 @@ class Firecloud {
   };
 
   // Getters
-  http = () => this._http;
-  groupEmail = () => this._groupEmail;
+  get http() {
+    return this._http;
+  }
+  get groupEmail() {
+    return this._groupEmail;
+  }
 }
 
 module.exports = Firecloud;

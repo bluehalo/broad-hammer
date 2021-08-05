@@ -48,14 +48,18 @@ class Auth {
   };
 
   /** Reads client_email from credsFile */
-  clientEmail = () => {
+  get clientEmail() {
     const creds = require(`../${this._credsFile}`);
     return creds.client_email;
-  };
+  }
 
   // Getters
-  credsFile = () => this._credsFile;
-  token = () => this._token;
+  get credsFile() {
+    return this._credsFile;
+  }
+  get token() {
+    return this._token;
+  }
 }
 
 module.exports = Auth;

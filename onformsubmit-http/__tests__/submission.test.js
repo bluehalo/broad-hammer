@@ -13,14 +13,14 @@ const GFORM_FAIL_MESSAGE = require(`./__fixtures__/gFormFailMessage.json`);
 describe("Submission Tests", () => {
   it("should accept message parsing and display message", async () => {
     const submission = new Submission(GFORM_TEST_MESSAGE);
-    expect(submission.submissionTime()).toEqual(
+    expect(submission.submissionTime).toEqual(
       "Sun Sept 19 2021 12:00:00 GMT-0400 (Eastern Daylight Time)"
     );
-    expect(submission.email()).toEqual("foo@bar.com");
-    expect(submission.editLink()).toEqual("https://foobar.com");
+    expect(submission.email).toEqual("foo@bar.com");
+    expect(submission.editLink).toEqual("https://foobar.com");
 
     // check json mapping
-    expect(submission.json()).toEqual({
+    expect(submission.json).toEqual({
       editLink: "https://foobar.com",
       email: "foo@bar.com",
       submissionTime:
@@ -36,7 +36,7 @@ describe("Submission Tests", () => {
     });
 
     // check required fields
-    expect(submission.billingProject()).toEqual("billing-account");
+    expect(submission.billingProject).toEqual("billing-account");
 
     // check console log
     console.info = jest.fn();
@@ -54,7 +54,7 @@ describe("Submission Tests", () => {
 
     expect(fs.writeFileSync).toHaveBeenCalledWith(
       "submission.json",
-      JSON.stringify(submission.json())
+      JSON.stringify(submission.json)
     );
   });
 

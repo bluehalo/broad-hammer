@@ -41,7 +41,7 @@ describe("Auth Tests", () => {
     await firecloud.removeUserFromGroup("HAMMER_Jest", "foo@bar.com", "admin");
     await firecloud.removeUserFromGroup("HAMMER_Jest", "f@b.com");
 
-    expect(firecloud.groupEmail()).toBe("HAMMER_Jest@dev.test.firecloud.org");
+    expect(firecloud.groupEmail).toBe("HAMMER_Jest@dev.test.firecloud.org");
     expect(await groupsPOSTSpy).toHaveBeenCalledWith("/api/groups/HAMMER_Jest");
     expect(await groupsPUTSpy.mock.calls).toEqual([
       ["/api/groups/HAMMER_Jest/admin/foo@bar.com"],

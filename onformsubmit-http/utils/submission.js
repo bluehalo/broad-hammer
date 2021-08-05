@@ -53,12 +53,21 @@ class Submission {
   };
 
   // Getters
-  submissionTime = () => this._submissionTime;
-  email = () => this._email;
-  editLink = () => this._editLink;
-
-  json = () => this._json;
-  billingProject = () => this._billingProject;
+  get submissionTime() {
+    return this._submissionTime;
+  }
+  get email() {
+    return this._email;
+  }
+  get editLink() {
+    return this._editLink;
+  }
+  get json() {
+    return this._json;
+  }
+  get billingProject() {
+    return this._billingProject;
+  }
 }
 
 module.exports = Submission;
