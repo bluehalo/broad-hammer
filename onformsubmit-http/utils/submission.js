@@ -16,7 +16,7 @@ class Submission {
       this._editLink = message.editLink;
 
       // deep copy and remove bulk QA data
-      this._json = JSON.parse(JSON.stringify(message));
+      this._json = { ...message };
       delete this._json.questions;
       delete this._json.responses;
 
