@@ -4,7 +4,5 @@ describe("Environment Tests", () => {
       "https://firecloud-orchestration.dsde-dev.broadinstitute.org"
     );
     expect(process.env.SERVICE_ACCOUNT_KEY).toEqual("creds.json");
-
-    expect(process.env.ADMIN_EMAILS.split(",").length).not.toEqual(0);
   });
 });

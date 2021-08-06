@@ -5,11 +5,16 @@ on: push
 jobs:
   build:
     runs-on: ubuntu-latest
+    env:
+      FIRECLOUD_URL: "https://firecloud-orchestration.dsde-dev.broadinstitute.org"
+      SERVICE_ACCOUNT_KEY: "creds.json"
     defaults:
       run:
         working-directory: onformsubmit-http
 
     steps:
       - uses: actions/checkout@v1
+      - name: Install modules
+        run: npm install
       - name: Run tests
-        uses: stefanoeb/jest-action@1.0.3
+        run: npm run githubTest
