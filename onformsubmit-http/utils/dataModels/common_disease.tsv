@@ -1,0 +1,18 @@
+	Field	Data element description	Field type	Enumerations	2
+TRUE	subject_id	Subject/Participant Identifier within project 	identifier	N/A	"Subject_1" "subj89054" etc.
+TRUE	dbgap_subject_id	Subject id used by dbGaP, if available	string	N/A	
+TRUE	consent	consent of subject	enumeration	see: https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4721915/table/pgen.1005772.t001/?report=objectonly	
+FALSE	study_nickname	Study nickname as given in http://tiny.cc/CCDG_CohortConsents 	string	N/A	
+FALSE	sequencing_center	Name of CCDG center	string	N/A	
+FALSE	dbgap_submission	Flag if sample has been submitted to dbGaP	boolean	Yes No	
+FALSE	dbgap_study_id	PHS ID for study	identifier	N/A	"phs000693"
+FALSE	sex	Reported sex	enumeration	Female Male Unknown Intersex	
+FALSE	race_ethnicity	Reported race/ethnicity defined by NIH Racial and Ethnic Categories and Definitions (NOT-OD-15-089)	enumeration	American Indian or Alaskan Native Asian Black or African American Hispanic or Latino Native Hawaiian or Other Pacific Islander White Other Unknown	
+FALSE	race_ethnicity_detail	Additional specific race/ethnicity description free text	string	N/A	"Polish"
+FALSE	disease_description	Disease name or free text description of disease	string		
+FALSE	affected_status	Indicate affected status of individual	enumeration	Affected Unaffected Possibly affected Unknown	
+FALSE	affected_status_detail	Detail, such as subtype, regarding affected status	string	N/A	
+FALSE	age_of_onset	Age of onset	integer	N/A	"21" "32" etc.
+FALSE	age_baseline	Age at baseline	integer	N/A	
+FALSE	age_unspecified	Age as given by study, but unspecified as to when. Most likely corresponds to age at the only visit	integer	N/A	
+FALSE	age_at_dna_collection	Age at DNA collection	integer	N/A

@@ -1,0 +1,29 @@
+	Field	Data element description	Field type	Field Priority	Enumerations	Multi-value delimiter	Examples	Notes (where does data differ from the standard model? 
+TRUE	subject_id	Subject/Participant Identifier within project 	identifier	1	N/A		"Subject_1" "subj89054" etc.	
+TRUE	project_id	Information field about cohort. Suggested use case is for the identification of a set of subjects from a specific data provider in order to identify this subset within searches (and for manuscript referencing)	string	2	N/A		"uwcmg_distal_arthrogryposis_type 1_212" "uwcmg_sponastrime_dysplasia_487" etc.	
+TRUE	submitter_id	A project-specific identifier for a node. This property is the calling card/nickname/alias for a unit of submission. It can be used in place of the UUID for identifying or recalling a node.	string	?	?		  	
+FALSE	prior_testing	Text description of any genetic testing for individual conducted prior to enrollment	string	3	N/A		"Normal karyotype, FBN2 screened clinically"	
+FALSE	pmid_id	Case specific PubMed ID if applicable	integer	3	N/A		"25683120"	
+FALSE	dbgap_submission	Flag if sample has been submitted to dbGaP	boolean	1	Yes No			
+FALSE	dbgap_study_id	PHS ID for study	identifier	2	N/A		"phs000693"	
+FALSE	dbgap_subject_id	Subject identifier used in dbGaP (if previously submitted)	identifier	2	N/A			
+FALSE	multiple_datasets	Flag if an individual has data represented in multiple data types (Ex: Yes if both exome and genome data is available for an individual)	boolean	2	Yes No			
+FALSE	family_id	CMG-designated Identifier for family	identifier	1	N/A		"fam89052" "Family_2" etc.	
+FALSE	paternal_id	subject_id for father	identifier	1 (if present)	N/A		"Subject_1" "subj89054" etc.	
+FALSE	maternal_id	subject_id for mother	identifier	1 (if present)	N/A		"Subject_1" "subj89054" etc.	
+FALSE	twin_id	subject_id for twins, triplets, etc	identifier	2	N/A	|	"Subject_1" "subj89054" "subj89054|subj89055" etc.	
+FALSE	proband_relationship	Text description of individual relationship to proband in family, especially useful to capture relationships when connecting distant relatives and connecting relatives not studied 	enumeration	1	[Submitters discuss with AnVIL team. AnVIL relationship standards are being reviewed]		"Proband" "Mother" "Maternal cousin" "Paternal grandmother" etc	
+FALSE	sex	Reported sex	enumeration	1	Female Male Unknown Intersex			
+FALSE	ancestry		enumeration	1	[Submitters discuss with AnVIL team. AnVIL ancestry standards are being reviewed]			
+FALSE	ancestry_detail	Additional specific ancestry description free text	string	3	N/A		"Polish"	
+FALSE	age_at_last_observation	Age at last observation. For conditions with later age of onset, this field lets users know if individuals marked as unaffected were younger or older than the age when the phenotype is expected to appear.	integer	2	N/A		"21" "32" etc.	
+FALSE	phenotype_group	Optional submitter-defined field for samples that could be grouped together in a single analysis based on overlap in phenotypic features.	enumeration	2	Defined by submitters (Will there be groupings across sites?)	|	"Distal Arthrogryposis"	
+FALSE	disease_id	Concept code for disease (e.g. OMIM, Orphanet)	identifier	2		|	"OMIM:108120" "ORPHA:1147" "OMIM:108120|ORPHA:1147"	
+FALSE	disease_description	Disease name or free text description of disease (especially if concept code not available)	string					
+FALSE	affected_status	Indicate affected status of individual	enumeration	1	Affected Unaffected Possibly affected Unknown			
+FALSE	congenital_status	Age of onset bucket range (if affected with non-congenital disorder)	enumeration	2	Unknown Congenital onset  Embryonal onset  Fetal onset Neonatal onset  Infantile onset Childhood onset Juvenile onset Adult onset  Young adult onset Middle age onset  Late onset			
+FALSE	age_of_onset	Age of onset (if affected with non-congenital disorder)	integer	2	N/A		"21" "32" etc.	
+FALSE	hpo_present	HPO phenotype terms present 	identifier	2	N/A	|	"HP:0000324" "HP:0000402|HP:0010609" etc.	
+FALSE	hpo_absent	HPO phenotype terms absent	identifier	3	N/A	|	"HP:0000324" "HP:0000402|HP:0010609" etc.	
+FALSE	phenotype_description	Phenotype term or free text description for additional phenotype information	string	2	N/A	|	"Distal arthrogryposis with stellate teeth"	
+FALSE	solve_state	Solved state of an individual	enumeration	2	Unsolved Tier 2 Tier 1
