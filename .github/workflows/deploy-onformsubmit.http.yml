@@ -2,17 +2,13 @@
 name: Deploy onFormSubmit
 
 # TODO: change this to your deployment strategy (e.g. on release)
-on:
-  push:
-    branches:
-      - master
+on: release
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
     defaults:
       run:
-        # TODO: change this to your local folder
         working-directory: onformsubmit-http
 
     steps:
