@@ -1,0 +1,15 @@
+name: Test onFormSubmit
+
+on: push
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: onformsubmit-http
+
+    steps:
+      - uses: actions/checkout@v1
+      - name: Run tests
+        uses: stefanoeb/jest-action@1.0.3
