@@ -23,6 +23,7 @@
   "jest": {
     "setupFiles": [
       "dotenv/config"
-    ]
+    ],
+    "maxWorkers": 1
   }
 }

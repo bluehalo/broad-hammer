@@ -12,6 +12,9 @@ class Firecloud {
     this._http = http;
 
     this._groupEmail = undefined;
+
+    this._DEFAULT_TEMPLATE_WORKSPACE = process.env.TEMPLATE_WORKSPACE;
+    this._DEFAULT_BILLING_PROJECT = process.env.DEFAULT_BILLING_PROJECT;
   }
 
   get http() {
@@ -19,6 +22,9 @@ class Firecloud {
   }
   get groupEmail() {
     return this._groupEmail;
+  }
+  get DEFAULT_BILLING_PROJECT() {
+    return this._DEFAULT_BILLING_PROJECT;
   }
 
   /**
@@ -73,12 +79,16 @@ class Firecloud {
   };
 
   /**
-   * Create workspace and shares with users
+   * @deprecated Creates workspace
    * @param {string} workspaceName [the name of the workspace to create]
-   * @param {string} billingProject [the billing project to use]
    * @param {string} authDomain [the auth domain to use]
+   * @param {string} [billingProject=] [the billing project to use]
    */
-  createWorkspace = async (workspaceName, billingProject, authDomain) => {
+  createWorkspace = async (
+    workspaceName,
+    authDomain,
+    billingProject = this._DEFAULT_BILLING_PROJECT
+  ) => {
     const workspaceRequest = {
       name: workspaceName,
       namespace: billingProject,
@@ -93,6 +103,45 @@ class Firecloud {
 
     try {
       await this._http.post("/api/workspaces", workspaceRequest);
+    } catch (e) {
+      throw new Error(e);
+    }
+  };
+
+  /**
+   * Deep clones workspace from template workspace
+   * @param {string} workspaceName [the name of the workspace to create]
+   * @param {string} billingProject [the billing project to use]
+   * @param {string} authDomain [the auth domain to use]
+   * @param {string} [attributes={}] [attributes for the project]
+   * @param {string} [templateWorkspaceName=] [the name of the template to use]
+   * @param {string} [templateBillingProject=] [the billing project of the template to use]
+   */
+  cloneWorkspace = async (
+    workspaceName,
+    authDomain,
+    billingProject = this._DEFAULT_BILLING_PROJECT,
+    templateWorkspaceName = this._DEFAULT_TEMPLATE_WORKSPACE,
+    templateBillingProject = this._DEFAULT_BILLING_PROJECT
+  ) => {
+    const workspaceRequest = {
+      name: workspaceName,
+      namespace: billingProject,
+      authorizationDomain: [
+        {
+          membersGroupName: authDomain,
+        },
+      ],
+      attributes: {},
+      copyFilesWithPrefix: "notebooks/",
+      noWorkspaceOwner: false,
+    };
+
+    try {
+      await this._http.post(
+        `/api/workspaces/${templateBillingProject}/${templateWorkspaceName}/clone`,
+        workspaceRequest
+      );
     } catch (e) {
       throw new Error(e);
     }
