@@ -37,22 +37,6 @@ class Submission {
     }
   }
 
-  /**
-   * Saves the submission data to file
-   * @param {string} [filePath='submission.json'] [path to save the file]
-   */
-  saveToFile = (filePath = "submission.json") => {
-    writeFileSync(filePath, JSON.stringify(this._json));
-  };
-
-  /** Displays submission contents */
-  display = () => {
-    console.info("--Submission Metadata--");
-    console.info(`${this._submissionTime}: ${this._email}`);
-    console.info(`  ${this._editLink}`);
-  };
-
-  // Getters
   get submissionTime() {
     return this._submissionTime;
   }
@@ -68,6 +52,21 @@ class Submission {
   get billingProject() {
     return this._billingProject;
   }
+
+  /**
+   * Saves the submission data to file
+   * @param {string} [filePath='submission.json'] [path to save the file]
+   */
+  saveToFile = (filePath = "submission.json") => {
+    writeFileSync(filePath, JSON.stringify(this._json));
+  };
+
+  /** Displays submission contents */
+  display = () => {
+    console.info("--Submission Metadata--");
+    console.info(`${this._submissionTime}: ${this._email}`);
+    console.info(`  ${this._editLink}`);
+  };
 }
 
 module.exports = Submission;

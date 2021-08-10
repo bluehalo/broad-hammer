@@ -14,6 +14,13 @@ class Firecloud {
     this._groupEmail = undefined;
   }
 
+  get http() {
+    return this._http;
+  }
+  get groupEmail() {
+    return this._groupEmail;
+  }
+
   /**
    * Creates a new Terra group and adds users
    * @param {string} groupName [the name of the group to create]
@@ -154,14 +161,6 @@ class Firecloud {
       throw new Error(e);
     }
   };
-
-  // Getters
-  get http() {
-    return this._http;
-  }
-  get groupEmail() {
-    return this._groupEmail;
-  }
 }
 
 module.exports = Firecloud;

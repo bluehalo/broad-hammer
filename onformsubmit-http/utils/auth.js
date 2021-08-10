@@ -21,6 +21,13 @@ class Auth {
     this._token = undefined;
   }
 
+  get credsFile() {
+    return this._credsFile;
+  }
+  get token() {
+    return this._token;
+  }
+
   /**
    * Requests Google's OAuth2 to get a token
    * @returns {Promise<string>} The access token
@@ -51,14 +58,6 @@ class Auth {
   get clientEmail() {
     const creds = require(`../${this._credsFile}`);
     return creds.client_email;
-  }
-
-  // Getters
-  get credsFile() {
-    return this._credsFile;
-  }
-  get token() {
-    return this._token;
   }
 }
 
