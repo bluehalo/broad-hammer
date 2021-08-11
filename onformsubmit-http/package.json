@@ -8,7 +8,7 @@
   },
   "main": "index.js",
   "scripts": {
-    "test": "jest .",
+    "test": "jest . --coverage",
     "start": "source .env && npx functions-framework --target=onFormSubmit",
     "sonar": "npx sonar-scanner -Dsonar.projectKey=Hammer -Dsonar.sources=. -Dsonar.host.url=http://localhost:9000 -Dsonar.login=9ef90bee0142f601c3c262e2b051eb76a661415d"
   },
@@ -18,12 +18,15 @@
   "devDependencies": {
     "@google-cloud/functions-framework": "^1.9.0",
     "dotenv": "^10.0.0",
-    "jest": "^27.0.6"
+    "jest": "^27.0.6",
+    "jest-sonar-reporter": "^2.0.0"
   },
   "jest": {
     "setupFiles": [
       "dotenv/config"
     ],
-    "maxWorkers": 1
+    "maxWorkers": 1,
+    "collectCoverage": true,
+    "testResultsProcessor": "jest-sonar-reporter"
   }
 }
