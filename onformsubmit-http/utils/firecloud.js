@@ -23,6 +23,9 @@ class Firecloud {
   get groupEmail() {
     return this._groupEmail;
   }
+  get DEFAULT_TEMPLATE_WORKSPACE() {
+    return this._DEFAULT_TEMPLATE_WORKSPACE;
+  }
   get DEFAULT_BILLING_PROJECT() {
     return this._DEFAULT_BILLING_PROJECT;
   }

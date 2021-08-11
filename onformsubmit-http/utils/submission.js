@@ -26,12 +26,6 @@ class Submission {
       for (let i = 0; i < questions.length; i++) {
         this._json[questions[i]] = responses[i];
       }
-
-      // check for required fields
-      this._billingProject = this._json["Billing Project"];
-      if (!this._billingProject) {
-        throw new Error();
-      }
     } catch (e) {
       throw new Error("Submission data malformed");
     }
@@ -49,12 +43,22 @@ class Submission {
   get json() {
     return this._json;
   }
-  get billingProject() {
-    return this._billingProject;
+  get sequencingCenter() {
+    return this._json["Sequencing Center"];
+  }
+  get numCohorts() {
+    return this._json["How many data cohorts do you need to submit?"];
+  }
+  get dataModel() {
+    if (this._json["Do you have a data model you wish to use?"] == "Yes") {
+      return "Custom Data Model";
+    } else {
+      return this._json["Choose the data model you wish to use"];
+    }
   }
 
   /**
-   * Saves the submission data to file
+   * @deprecated Saves the submission data to file
    * @param {string} [filePath='submission.json'] [path to save the file]
    */
   saveToFile = (filePath = "submission.json") => {
