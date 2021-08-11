@@ -35,9 +35,6 @@ describe("Submission Tests", () => {
       "Workspace Name": "hammer_test_space",
     });
 
-    // check required fields
-    expect(submission.billingProject).toEqual("billing-account");
-
     // check console log
     console.info = jest.fn();
     submission.display();

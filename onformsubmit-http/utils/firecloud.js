@@ -14,6 +14,7 @@ class Firecloud {
     this._groupEmail = undefined;
 
     this._DEFAULT_TEMPLATE_WORKSPACE = process.env.TEMPLATE_WORKSPACE;
+    this._DEFAULT_TEMPLATE_NAMESPACE = process.env.TEMPLATE_NAMESPACE;
     this._DEFAULT_BILLING_PROJECT = process.env.DEFAULT_BILLING_PROJECT;
   }
 
@@ -25,6 +26,9 @@ class Firecloud {
   }
   get DEFAULT_TEMPLATE_WORKSPACE() {
     return this._DEFAULT_TEMPLATE_WORKSPACE;
+  }
+  get DEFAULT_TEMPLATE_NAMESPACE() {
+    return this._DEFAULT_TEMPLATE_NAMESPACE;
   }
   get DEFAULT_BILLING_PROJECT() {
     return this._DEFAULT_BILLING_PROJECT;
@@ -118,14 +122,14 @@ class Firecloud {
    * @param {string} authDomain [the auth domain to use]
    * @param {string} [attributes={}] [attributes for the project]
    * @param {string} [templateWorkspaceName=] [the name of the template to use]
-   * @param {string} [templateBillingProject=] [the billing project of the template to use]
+   * @param {string} [templateNamespace=] [the billing project of the template to use]
    */
   cloneWorkspace = async (
     workspaceName,
     authDomain,
     billingProject = this._DEFAULT_BILLING_PROJECT,
     templateWorkspaceName = this._DEFAULT_TEMPLATE_WORKSPACE,
-    templateBillingProject = this._DEFAULT_BILLING_PROJECT
+    templateNamespace = this._DEFAULT_TEMPLATE_NAMESPACE
   ) => {
     const workspaceRequest = {
       name: workspaceName,
@@ -142,7 +146,7 @@ class Firecloud {
 
     try {
       await this._http.post(
-        `/api/workspaces/${templateBillingProject}/${templateWorkspaceName}/clone`,
+        `/api/workspaces/${templateNamespace}/${templateWorkspaceName}/clone`,
         workspaceRequest
       );
     } catch (e) {

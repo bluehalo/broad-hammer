@@ -26,6 +26,11 @@ class Submission {
       for (let i = 0; i < questions.length; i++) {
         this._json[questions[i]] = responses[i];
       }
+
+      // double check gform data
+      if (!this._editLink) {
+        throw new Error();
+      }
     } catch (e) {
       throw new Error("Submission data malformed");
     }
