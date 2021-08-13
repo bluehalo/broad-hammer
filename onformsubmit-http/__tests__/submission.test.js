@@ -7,11 +7,12 @@ jest.mock("fs", () => ({
 const fs = require("fs");
 
 // import fixtures
+const GFORM_EXAMPLE_RESPONSE = require("./__fixtures__/gFormExampleResponse.json");
 const GFORM_TEST_MESSAGE = require(`./__fixtures__/gFormTestMessage.json`);
 const GFORM_FAIL_MESSAGE = require(`./__fixtures__/gFormFailMessage.json`);
 
 describe("Submission Tests", () => {
-  it("should accept message parsing and display message", async () => {
+  it("should accept message parsing and display message", () => {
     const submission = new Submission(GFORM_TEST_MESSAGE);
     expect(submission.submissionTime).toEqual(
       "Sun Sept 19 2021 12:00:00 GMT-0400 (Eastern Daylight Time)"
@@ -55,7 +56,7 @@ describe("Submission Tests", () => {
     );
   });
 
-  it("should throw failure message when parsing", async () => {
+  it("should throw failure message when parsing", () => {
     expect(() => {
       try {
         new Submission(GFORM_FAIL_MESSAGE);
@@ -63,5 +64,11 @@ describe("Submission Tests", () => {
         throw new Error(e.message);
       }
     }).toThrow("Submission data malformed");
+  });
+
+  it("should return the cohort map", () => {
+    const submission = new Submission(GFORM_EXAMPLE_RESPONSE);
+    expect(submission.cohortMap[0]).toEqual(undefined);
+    expect(submission.cohortMap.length).toEqual(4);
   });
 });
