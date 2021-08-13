@@ -26,6 +26,8 @@ describe("Auth Tests", () => {
 
   it("should test env variables are loaded properly", () => {
     const firecloud = new Firecloud(axios);
+    expect(firecloud.DEFAULT_TEMPLATE_NAMESPACE).toBe("anvil-datastorage");
+    expect(firecloud.DEFAULT_TEMPLATE_WORKSPACE).toBe("HAMMER_Template");
     expect(firecloud.DEFAULT_BILLING_PROJECT).toBe("anvil-datastorage");
   });
 
