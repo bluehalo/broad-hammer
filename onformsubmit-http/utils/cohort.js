@@ -83,17 +83,10 @@ class Cohort {
     }
 
     // create workspace name and auth domain from data
-    console.log(data);
-    const studyName = data["Cohort/Dataset Name"].replace(/ /g, "_").trim();
+    const studyName = data["Cohort/Dataset Name"].replace(/ /g, "_").trim(); // replace spaces
     this._workspaceName = `AnVIL_${this._dataModel}_${this._sequencingCenter}_${studyName}`;
     this._authDomain = `Auth_${this._workspaceName}`;
-
-    // update workspace name
     this._attributes["library:datasetName"] = this._workspaceName;
-
-    // TODO: update data types
-    // library:datatype.items
-    // library:datatype.itemsType
   }
 
   get workspaceName() {
