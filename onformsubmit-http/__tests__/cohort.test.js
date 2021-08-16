@@ -40,8 +40,6 @@ describe("Cohort Tests", () => {
       "library:datasetOwner": "Foo Bar",
       "library:contactEmail": "foo@bar.com",
       "library:datasetName": "AnVIL_CCDG_AESC_Cohort_Test_A",
-      "library:dataFileFormats.items": "bai, bam",
-      "library:datatype.items": ["Genome"],
       "library:dataUseRestriction": "GRU",
       "library:reference": "hg19 / GRCh37",
     });
@@ -50,12 +48,6 @@ describe("Cohort Tests", () => {
       "library:datasetOwner": "Foo Bar",
       "library:contactEmail": "foo@bar.com",
       "library:datasetName": "AnVIL_CCDG_AESC_Cohort_2:_Name",
-      "library:datatype.items": [
-        "Genome",
-        "Exomes",
-        "Phenotypes",
-        "SNP Arrays",
-      ],
       "library:dataUseRestriction": "RUO",
     });
     expect(cohorts[2].attributes).toStrictEqual({
@@ -63,7 +55,6 @@ describe("Cohort Tests", () => {
       "library:datasetOwner": "Foo Bar",
       "library:contactEmail": "foo@bar.com",
       "library:datasetName": "AnVIL_CCDG_AESC_cohort_3:_data",
-      "library:dataFileFormats.items": "bai, bam, crai, Other",
       "library:dataUseRestriction": "RUO",
     });
 

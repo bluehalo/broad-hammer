@@ -8,7 +8,7 @@ const SERVICE_ACCOUNT_KEY = "creds.json";
 const FIRECLOUD_URL =
   "https://firecloud-orchestration.dsde-dev.broadinstitute.org/";
 
-describe("Auth Tests", () => {
+describe("Firecloud Tests", () => {
   beforeAll(async () => {
     // setup axios client
     const auth = new Auth(SERVICE_ACCOUNT_KEY);
@@ -26,9 +26,11 @@ describe("Auth Tests", () => {
 
   it("should test env variables are loaded properly", () => {
     const firecloud = new Firecloud(axios);
-    expect(firecloud.DEFAULT_TEMPLATE_NAMESPACE).toBe("anvil-datastorage");
-    expect(firecloud.DEFAULT_TEMPLATE_WORKSPACE).toBe("HAMMER_Template");
-    expect(firecloud.DEFAULT_BILLING_PROJECT).toBe("anvil-datastorage");
+    expect(firecloud.DEFAULT_TEMPLATE_NAMESPACE).toBe("anvil-dev-fhir2");
+    expect(firecloud.DEFAULT_TEMPLATE_WORKSPACE).toBe(
+      "Asymmetrik_Hammer_Template"
+    );
+    expect(firecloud.DEFAULT_BILLING_PROJECT).toBe("anvil-dev-fhir2");
   });
 
   it("should make request to /api/groups", async () => {
@@ -78,6 +80,7 @@ describe("Auth Tests", () => {
     await firecloud.cloneWorkspace(
       workspaceName,
       "Auth_HAMMER_Testing",
+      {},
       "general-dev-billing-account",
       "HAMMER_Template",
       "general-dev-billing-account"
@@ -96,7 +99,10 @@ describe("Auth Tests", () => {
       {
         attributes: {},
         name: workspaceName,
-        authorizationDomain: [{ membersGroupName: "Auth_HAMMER_Testing" }],
+        authorizationDomain: [
+          { membersGroupName: "Auth_HAMMER_Testing" },
+          { membersGroupName: "Auth_Asymmetrik_Hammer" },
+        ],
         namespace: "general-dev-billing-account",
         copyFilesWithPrefix: "notebooks/",
         noWorkspaceOwner: false,
