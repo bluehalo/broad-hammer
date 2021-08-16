@@ -15,6 +15,7 @@ class Firecloud {
 
     this._DEFAULT_TEMPLATE_WORKSPACE = process.env.TEMPLATE_WORKSPACE;
     this._DEFAULT_TEMPLATE_NAMESPACE = process.env.TEMPLATE_NAMESPACE;
+    this._DEFAULT_TEMPLATE_AUTH_DOMAIN = process.env.TEMPLATE_AUTH_DOMAIN;
     this._DEFAULT_BILLING_PROJECT = process.env.DEFAULT_BILLING_PROJECT;
   }
 
@@ -29,6 +30,9 @@ class Firecloud {
   }
   get DEFAULT_TEMPLATE_NAMESPACE() {
     return this._DEFAULT_TEMPLATE_NAMESPACE;
+  }
+  get DEFAULT_TEMPLATE_AUTH_DOMAIN() {
+    return this._DEFAULT_TEMPLATE_AUTH_DOMAIN;
   }
   get DEFAULT_BILLING_PROJECT() {
     return this._DEFAULT_BILLING_PROJECT;
@@ -45,7 +49,7 @@ class Firecloud {
         this._groupEmail = res.data.groupEmail;
       });
     } catch (e) {
-      throw new Error(e);
+      throw new Error(`/api/groups/${groupName} ${e}`);
     }
 
     // if group wasn't created, throw an error
@@ -67,7 +71,7 @@ class Firecloud {
     try {
       await this._http.put(`/api/groups/${groupName}/${role}/${userEmail}`);
     } catch (e) {
-      throw new Error(e);
+      throw new Error(`/api/groups/${groupName}/${role}/${userEmail} ${e}`);
     }
   };
 
@@ -81,7 +85,7 @@ class Firecloud {
     try {
       await this._http.delete(`/api/groups/${groupName}/${role}/${userEmail}`);
     } catch (e) {
-      throw new Error(e);
+      throw new Error(`/api/groups/${groupName}/${role}/${userEmail} ${e}`);
     }
   };
 
@@ -111,24 +115,25 @@ class Firecloud {
     try {
       await this._http.post("/api/workspaces", workspaceRequest);
     } catch (e) {
-      throw new Error(e);
+      throw new Error(`/api/workspaces ${e}`);
     }
   };
 
   /**
    * Deep clones workspace from template workspace
    * @param {string} workspaceName [the name of the workspace to create]
-   * @param {string} billingProject [the billing project to use]
    * @param {string} authDomain [the auth domain to use]
    * @param {string} [attributes={}] [attributes for the project]
+   * @param {string} [billingProject=] [the billing project to use]
    * @param {string} [templateWorkspaceName=] [the name of the template to use]
    * @param {string} [templateNamespace=] [the billing project of the template to use]
    */
   cloneWorkspace = async (
     workspaceName,
     authDomain,
+    attributes = {},
     billingProject = this._DEFAULT_BILLING_PROJECT,
-    templateWorkspaceName = this._DEFAULT_TEMPLATE_WORKSPACE,
+    templateWorkspace = this._DEFAULT_TEMPLATE_WORKSPACE,
     templateNamespace = this._DEFAULT_TEMPLATE_NAMESPACE
   ) => {
     const workspaceRequest = {
@@ -138,19 +143,24 @@ class Firecloud {
         {
           membersGroupName: authDomain,
         },
+        {
+          membersGroupName: this._DEFAULT_TEMPLATE_AUTH_DOMAIN,
+        },
       ],
-      attributes: {},
+      attributes: attributes,
       copyFilesWithPrefix: "notebooks/",
       noWorkspaceOwner: false,
     };
 
     try {
       await this._http.post(
-        `/api/workspaces/${templateNamespace}/${templateWorkspaceName}/clone`,
+        `/api/workspaces/${templateNamespace}/${templateWorkspace}/clone`,
         workspaceRequest
       );
     } catch (e) {
-      throw new Error(e);
+      throw new Error(
+        `/api/workspaces/${templateNamespace}/${templateWorkspace}/clone ${e}`
+      );
     }
   };
 
@@ -183,7 +193,9 @@ class Firecloud {
         aclRequest
       );
     } catch (e) {
-      throw new Error(e);
+      throw new Error(
+        `/api/workspaces/${billingProject}/${workspaceName}/acl?inviteUsersNotFound=true ${e}`
+      );
     }
   };
 
@@ -214,7 +226,9 @@ class Firecloud {
         aclRemoveRequest
       );
     } catch (e) {
-      throw new Error(e);
+      throw new Error(
+        `/api/workspaces/${billingProject}/${workspaceName}/acl ${e}`
+      );
     }
   };
 }

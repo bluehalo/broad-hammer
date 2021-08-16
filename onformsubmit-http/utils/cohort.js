@@ -67,6 +67,8 @@ class Cohort {
       }
     }
 
+    // DEV: this is an experiemntal field, but is not currently supported
+    //      will leave code in place for now
     // map file types
     if (this._attributes["library:dataFileFormats.items"]) {
       const rawFileTypes = this._attributes["library:dataFileFormats.items"];

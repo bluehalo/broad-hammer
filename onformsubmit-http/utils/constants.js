@@ -35,8 +35,9 @@ const dataModels = {
 const questionMapping = {
   "Cohort/Dataset Name": "library:datasetName",
   "Sequencing Center": "library:institute",
-  "File Types and Count": "library:dataFileFormats.items",
-  "Data Types": "library:datatype.items",
+  // DEV: these are experimental fields (need further clarification)
+  // "File Types and Count": "library:dataFileFormats.items",
+  // "Data Types": "library:datatype.items",
   "Data Use Code": "library:dataUseRestriction",
   "What is the functional equivalency of this cohort?": "library:reference",
 };
