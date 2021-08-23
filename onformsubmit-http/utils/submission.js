@@ -23,13 +23,26 @@ class Submission {
       // map questions and responses
       const questions = JSON.parse(message.questions);
       const responses = JSON.parse(message.responses);
+      this._cohortMap = [];
       for (let i = 0; i < questions.length; i++) {
         this._json[questions[i]] = responses[i];
+
+        const cohortRegex = /^Cohort ([1-8]): /;
+        if (questions[i].match(cohortRegex)) {
+          const question = questions[i];
+          const cohortNumber = question.match(cohortRegex)[1];
+          const cohortQuestion = question.replace(cohortRegex, "");
+
+          const currEntry = this._cohortMap[cohortNumber];
+          this._cohortMap[cohortNumber] = {
+            ...currEntry,
+            [cohortQuestion]: responses[i],
+          };
+        }
       }
 
-      // check for required fields
-      this._billingProject = this._json["Billing Project"];
-      if (!this._billingProject) {
+      // double check gform data
+      if (!this._editLink) {
         throw new Error();
       }
     } catch (e) {
@@ -37,22 +50,6 @@ class Submission {
     }
   }
 
-  /**
-   * Saves the submission data to file
-   * @param {string} [filePath='submission.json'] [path to save the file]
-   */
-  saveToFile = (filePath = "submission.json") => {
-    writeFileSync(filePath, JSON.stringify(this._json));
-  };
-
-  /** Displays submission contents */
-  display = () => {
-    console.info("--Submission Metadata--");
-    console.info(`${this._submissionTime}: ${this._email}`);
-    console.info(`  ${this._editLink}`);
-  };
-
-  // Getters
   get submissionTime() {
     return this._submissionTime;
   }
@@ -65,9 +62,40 @@ class Submission {
   get json() {
     return this._json;
   }
-  get billingProject() {
-    return this._billingProject;
+  get contactName() {
+    return this._json["Terra Registered Contact Name"];
   }
+  get sequencingCenter() {
+    return this._json["Sequencing Center"];
+  }
+  get numCohorts() {
+    return parseInt(this._json["How many data cohorts do you need to submit?"]);
+  }
+  get dataModel() {
+    if (this._json["Do you have a data model you wish to use?"] == "Yes") {
+      return "Custom Data Model";
+    } else {
+      return this._json["Choose the data model you wish to use"];
+    }
+  }
+  get cohortMap() {
+    return this._cohortMap;
+  }
+
+  /**
+   * @deprecated Saves the submission data to file
+   * @param {string} [filePath='submission.json'] [path to save the file]
+   */
+  saveToFile = (filePath = "submission.json") => {
+    writeFileSync(filePath, JSON.stringify(this._json));
+  };
+
+  /** Displays submission contents */
+  display = () => {
+    console.info("--Submission Metadata--");
+    console.info(`${this._submissionTime}: ${this._email}`);
+    console.info(`  ${this._editLink}`);
+  };
 }
 
 module.exports = Submission;

@@ -1,0 +1,7 @@
+{
+  "submissionTime": "Fri Aug 13 2021 10:50:38 GMT-0400 (Eastern Daylight Time)",
+  "email": "test@ing.com",
+  "editLink": "https://docs.google.com/forms/d/e/1FAIpQLSek5UEaoFbW_jiP9iL5Q8Tg_7RZsv6zOx60kGBwzi99lrkMGg/viewform?edit2=2_ABaOnucJCK3zfjEW8N8h1cYldgTIw4y_zYPkjplbOIqYuEvnP_ZYsBz2ik8s-UA5LGKXlaY",
+  "questions": "[\"Terra Registered Contact Name\",\"Sequencing Center\",\"How many data cohorts do you need to submit?\",\"Do you have a data model you wish to use?\",\"Upload data model files\",\"Cohort 1: Dataset Name\",\"Cohort 1: Study Nickname\",\"Cohort 1: File Types and Count\",\"Cohort 1: Data types\",\"Cohort 1: Data Use Code\",\"Cohort 1: Consent Category and Research Use Limitations\",\"Cohort 1: What is the functional equivalency of this cohort?\",\"Cohort 1: Is this study registered in gbGaP?\",\"Do you have additional cohorts to submit?\",\"Study Submission Personnel\"]",
+  "responses": "[\"file\",\"Kaiser Permanente\",\"1\",\"Yes\",[\"17r7GMvYqjlEmYIwG7FYEaiVR8Sqh9Qs2\"],\"file\",\"nick\",[\"Less than 100\",null,null,null,null,null,null,null,null,null],[\"Phenotypes\"],\"Unknown\",\"None\",\"I don\"t know\",\"No, will not be dbGaP registered\",\"No\",\"ltran@asymmetrik.com\"]"
+}

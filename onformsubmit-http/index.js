@@ -6,11 +6,40 @@ const axios = require("axios").default;
 const Auth = require("./utils/auth");
 const Submission = require("./utils/submission");
 const Firecloud = require("./utils/firecloud");
+const Cohort = require("./utils/cohort");
 
 // pull env vars
-const FIRECLOUD_URL = process.env.FIRECLOUD_URL;
 const SERVICE_ACCOUNT_KEY = process.env.SERVICE_ACCOUNT_KEY;
-const ADMIN_EMAILS = process.env.ADMIN_EMAILS.split(",");
+const FIRECLOUD_URL = process.env.FIRECLOUD_URL;
+const ADMIN_EMAIL = process.env.ADMIN_EMAIL;
+const BILLING_PROJECT = process.env.DEFAULT_BILLING_PROJECT;
+
+const processCohort = async (cohort, firecloud) => {
+  try {
+    const workspaceName = cohort.workspaceName;
+    const authDomain = cohort.authDomain;
+    const attributes = cohort.attributes;
+
+    // create auth domain for workspace
+    await firecloud.createGroup(authDomain);
+
+    // add users to auth domain
+    await firecloud.addUserToGroup(authDomain, ADMIN_EMAIL, "admin");
+
+    // clone workspace from template
+    await firecloud.cloneWorkspace(workspaceName, authDomain, attributes);
+
+    // add admin and auth domain to group
+    await firecloud.addUserToWorkspace(
+      workspaceName,
+      BILLING_PROJECT,
+      ADMIN_EMAIL,
+      "OWNER"
+    );
+  } catch (e) {
+    throw new Error(e);
+  }
+};
 
 exports.onFormSubmit = async (req, res) => {
   const message = req.body;
@@ -24,7 +53,7 @@ exports.onFormSubmit = async (req, res) => {
   let auth, serviceAccountEmail;
   try {
     auth = new Auth(SERVICE_ACCOUNT_KEY);
-    serviceAccountEmail = auth.clientEmail();
+    serviceAccountEmail = auth.clientEmail;
 
     const bearerToken = await auth.requestAccessToken();
     httpClient.defaults.headers.common[
@@ -36,99 +65,52 @@ exports.onFormSubmit = async (req, res) => {
   }
 
   // extract data from submission message
-  let submission;
+  let submission,
+    sequencingCenter,
+    contactName,
+    contactEmail,
+    dataModel,
+    cohortMap;
   try {
     submission = new Submission(message);
+    sequencingCenter = submission.sequencingCenter;
+    contactName = submission.contactName;
+    contactEmail = submission.email;
+    dataModel = submission.dataModel;
+    cohortMap = submission.cohortMap;
   } catch (e) {
     console.error(`[400] Failed to parse submission message: ${e}`);
     return res.status(400).send(`[Bad Request] ${e}`);
   }
 
-  // extract neccessary data from submission message
-  const groupName = submission.groupName();
-  const billingProject = submission.billingProject();
-  const workspaceName = submission.workspaceName();
-  const submitterEmail = submission.email();
-
-  // creates firecloud client
-  const firecloud = new Firecloud(httpClient);
-
-  // creates group and adds submitter + anvil-admins to group
-  // POST /api/groups/${groupName}
-  // PUT /api/groups/${groupName}/${role}/${email}
+  // create cohort objects to be processed
+  const cohorts = [];
   try {
-    // create group
-    await firecloud.createGroup(groupName);
-    await firecloud.addUserToGroup(groupName, serviceAccountEmail, "admin");
+    cohortMap.forEach((cohortData) => {
+      const cohort = new Cohort(
+        sequencingCenter,
+        contactName,
+        contactEmail,
+        dataModel,
+        cohortData
+      );
 
-    // add anvil-admins to group
-    ADMIN_EMAILS.forEach(async (email) => {
-      await firecloud.addUserToGroup(groupName, email, "admin");
+      cohorts.push(cohort);
     });
-
-    // submitter will need to be manually added as admin
-    await firecloud.addUserToGroup(groupName, submitterEmail);
   } catch (e) {
-    console.error(`[400] Failed to create group: ${e}`);
+    console.error(`[400] Failed to parse cohort map: ${e}`);
     return res.status(400).send(`[Bad Request] ${e}`);
   }
 
-  // create and share workspace
-  // POST /api/workspaces
-  // PATCH /api/workspaces/${workspaceNamespace}/${workspaceName}/acl
+  // pass each cohort to firecloud to be processed
+  const firecloud = new Firecloud(httpClient);
   try {
-    await firecloud.createWorkspace(workspaceName, billingProject, groupName);
-    await firecloud.shareWorkspace(
-      workspaceName,
-      billingProject,
-      serviceAccountEmail,
-      "OWNER"
-    );
-
-    // add anvil-admins to group
-    ADMIN_EMAILS.forEach(async (email) => {
-      await firecloud.addUserToWorkspace(
-        workspaceName,
-        billingProject,
-        email,
-        "OWNER"
-      );
-    });
-
-    // add submitter as read-only
-    await firecloud.addUserToWorkspace(
-      workspaceName,
-      billingProject,
-      submitterEmail,
-      "READER"
-    );
-  } catch (err) {
-    console.error(err);
-    console.error(`[400] Failed to create workspace: ${err}`);
-    return res.status(400).send(`[Bad Request] ${err}`);
-  }
-
-  // TODO: remove service account from auth domain
-  // user must manually remove service account from workspace
-  try {
-    // remove from auth domain
-    await firecloud.removeUserFromGroup(
-      groupName,
-      serviceAccountEmail,
-      "admin"
-    );
-
-    // remove from workspace
-    await firecloud.removeUserFromWorkspace(
-      workspaceName,
-      billingProject,
-      serviceAccountEmail
-    );
-  } catch (err) {
-    console.error(
-      `[400] Failed to remove ${serviceAccountEmail} from workspace: ${err}`
-    );
-    return res.status(400).send(`[Bad Request] ${err}`);
+    for (const cohort of cohorts) {
+      await processCohort(cohort, firecloud);
+    }
+  } catch (e) {
+    console.error(`[500] Failed to process cohorts: ${e}`);
+    return res.status(500).send(`[Internal Server Error] ${e}`);
   }
 
   // TODO: Replace with meaningful message
