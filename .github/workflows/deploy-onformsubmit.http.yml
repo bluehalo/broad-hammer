@@ -45,8 +45,8 @@ jobs:
       - name: Setup gcloud
         uses: google-github-actions/setup-gcloud@master
         with:
-          project_id: $PROJECT_ID
-          service_account_key: $PRIVATE_KEY
+          project_id: ${{ env.PROJECT_ID }}
+          service_account_key: ${{ env.PRIVATE_KEY }}
           export_default_credentials: true
 
       - name: Generate creds.json
@@ -60,6 +60,6 @@ jobs:
         run: |
           gcloud functions deploy onFormSubmit \
             -- trigger-http \
-            -- region=$GCP_REGION \
+            -- region=${{ env.GCP_REGION }} \
             -- runtime=nodejs12 \
             -- memory=128MB \
