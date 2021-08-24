@@ -2,7 +2,7 @@ const fs = require("fs");
 
 const outFlags = ["-o", "--out"];
 
-let outFile = ".env";
+let outFile = ".env.yaml";
 
 const args = process.argv.slice(2);
 
@@ -14,7 +14,7 @@ const processedArgs = args.reduce((accum, arg, i) => {
       outFile = args[i + 1];
     }
   } else if (!outFlags.includes(args[i - 1])) {
-    accum.push(arg);
+    accum.push(arg.replace("=", ": "));
   }
   return accum;
 }, []);
