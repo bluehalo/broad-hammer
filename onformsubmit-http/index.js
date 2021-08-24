@@ -50,10 +50,9 @@ exports.onFormSubmit = async (req, res) => {
   });
 
   // initialize auth with token
-  let auth, serviceAccountEmail;
+  let auth;
   try {
     auth = new Auth(SERVICE_ACCOUNT_KEY);
-    serviceAccountEmail = auth.clientEmail;
 
     const bearerToken = await auth.requestAccessToken();
     httpClient.defaults.headers.common[
