@@ -1,6 +1,7 @@
 /**
  * Handles Google Form submission answers
  */
+require("dotenv").config();
 const axios = require("axios").default;
 
 const Auth = require("./utils/auth");
