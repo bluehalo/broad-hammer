@@ -2,7 +2,7 @@ const fs = require("fs");
 
 const outFlags = ["-o", "--out"];
 
-let outFile = ".env.yaml";
+let outFile = ".env";
 
 const args = process.argv.slice(2);
 

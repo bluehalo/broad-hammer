@@ -52,7 +52,7 @@ jobs:
       - name: Generate creds.json
         run: node scripts/create-gcp-creds.js
       - name: Generate .env.yaml
-        run: node scripts/create-env.js FIRECLOUD_URL="https://api.firecloud.org" SERVICE_ACCOUNT_KEY="creds.json" ADMIN_EMAIL=${{ secrets.ADMIN_EMAIL }} DEFAULT_BILLING_PROJECT=${{ secrets.DEFAULT_BILLING_PROJECT }} TEMPLATE_NAMESPACE=${{ secrets.TEMPLATE_NAMESPACE }} TEMPLATE_WORKSPACE=${{ secrets.TEMPLATE_WORKSPACE }} TEMPLATE_AUTH_DOMAIN=${{ secrets.TEMPLATE_AUTH_DOMAIN }} authTestClientEmail=${{ secrets.authTestClientEmail }}
+        run: node scripts/create-env.js -o .env.yaml FIRECLOUD_URL="https://api.firecloud.org" SERVICE_ACCOUNT_KEY="creds.json" ADMIN_EMAIL=${{ secrets.ADMIN_EMAIL }} DEFAULT_BILLING_PROJECT=${{ secrets.DEFAULT_BILLING_PROJECT }} TEMPLATE_NAMESPACE=${{ secrets.TEMPLATE_NAMESPACE }} TEMPLATE_WORKSPACE=${{ secrets.TEMPLATE_WORKSPACE }} TEMPLATE_AUTH_DOMAIN=${{ secrets.TEMPLATE_AUTH_DOMAIN }} authTestClientEmail=${{ secrets.authTestClientEmail }}
 
       - name: Deploy
         env:
