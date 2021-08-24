@@ -1,8 +1,10 @@
 # secrets
-.env
+.env*
 *creds.json
 
 # dev
 node_modules
 .vscode
 .scannerwork
+coverage
+test-report.xml

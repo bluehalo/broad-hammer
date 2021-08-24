@@ -2,7 +2,7 @@
 name: Deploy onFormSubmit
 
 # TODO: change this to your deployment strategy (e.g. on release)
-on: release
+on: push
 
 jobs:
   deploy:

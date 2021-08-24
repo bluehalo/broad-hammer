@@ -8,7 +8,7 @@ const SERVICE_ACCOUNT_KEY = "creds.json";
 const FIRECLOUD_URL =
   "https://firecloud-orchestration.dsde-dev.broadinstitute.org/";
 
-describe("Auth Tests", () => {
+describe("Firecloud Tests", () => {
   beforeAll(async () => {
     // setup axios client
     const auth = new Auth(SERVICE_ACCOUNT_KEY);
@@ -18,6 +18,19 @@ describe("Auth Tests", () => {
 
     axios.defaults.baseURL = FIRECLOUD_URL;
     axios.defaults.headers.common.Authorization = `Bearer ${bearerToken}`;
+  });
+
+  afterEach(() => {
+    jest.clearAllMocks();
+  });
+
+  it("should test env variables are loaded properly", () => {
+    const firecloud = new Firecloud(axios);
+    expect(firecloud.DEFAULT_TEMPLATE_NAMESPACE).toBe("anvil-dev-fhir2");
+    expect(firecloud.DEFAULT_TEMPLATE_WORKSPACE).toBe(
+      "Asymmetrik_Hammer_Template"
+    );
+    expect(firecloud.DEFAULT_BILLING_PROJECT).toBe("anvil-dev-fhir2");
   });
 
   it("should make request to /api/groups", async () => {
@@ -41,7 +54,7 @@ describe("Auth Tests", () => {
     await firecloud.removeUserFromGroup("HAMMER_Jest", "foo@bar.com", "admin");
     await firecloud.removeUserFromGroup("HAMMER_Jest", "f@b.com");
 
-    expect(firecloud.groupEmail()).toBe("HAMMER_Jest@dev.test.firecloud.org");
+    expect(firecloud.groupEmail).toBe("HAMMER_Jest@dev.test.firecloud.org");
     expect(await groupsPOSTSpy).toHaveBeenCalledWith("/api/groups/HAMMER_Jest");
     expect(await groupsPUTSpy.mock.calls).toEqual([
       ["/api/groups/HAMMER_Jest/admin/foo@bar.com"],
@@ -50,6 +63,63 @@ describe("Auth Tests", () => {
     expect(await groupsDELETESpy.mock.calls).toEqual([
       ["/api/groups/HAMMER_Jest/admin/foo@bar.com"],
       ["/api/groups/HAMMER_Jest/member/f@b.com"],
+    ]);
+  });
+
+  it("should make requests to /api/workspaces/{workspaceNamespace}/{workspaceName}/clone", async () => {
+    const firecloud = new Firecloud(axios);
+
+    const workspacePOSTSpy = jest.spyOn(axios, "post").mockImplementation();
+    const workspacePATCHSpy = jest.spyOn(axios, "patch").mockImplementation();
+
+    // DEV: hacky way to create workspace on dev env
+    // const workspaceName = `HAMMER_TEST_${Math.floor(Math.random() * 100)}`;
+    const workspaceName = "HAMMER_TEST";
+
+    // clone workspace
+    await firecloud.cloneWorkspace(
+      workspaceName,
+      "Auth_HAMMER_Testing",
+      {},
+      "general-dev-billing-account",
+      "HAMMER_Template",
+      "general-dev-billing-account"
+    );
+
+    // add user
+    await firecloud.addUserToWorkspace(
+      workspaceName,
+      "general-dev-billing-account",
+      "foo@bar.com",
+      "OWNER"
+    );
+
+    expect(await workspacePOSTSpy).toHaveBeenCalledWith(
+      "/api/workspaces/general-dev-billing-account/HAMMER_Template/clone",
+      {
+        attributes: {},
+        name: workspaceName,
+        authorizationDomain: [
+          { membersGroupName: "Auth_HAMMER_Testing" },
+          { membersGroupName: "Auth_Asymmetrik_Hammer" },
+        ],
+        namespace: "general-dev-billing-account",
+        copyFilesWithPrefix: "notebooks/",
+        noWorkspaceOwner: false,
+      }
+    );
+    expect(await workspacePATCHSpy.mock.calls).toEqual([
+      [
+        `/api/workspaces/general-dev-billing-account/${workspaceName}/acl?inviteUsersNotFound=true`,
+        [
+          {
+            email: "foo@bar.com",
+            accessLevel: "OWNER",
+            canShare: true,
+            canCompute: true,
+          },
+        ],
+      ],
     ]);
   });
 
@@ -66,8 +136,8 @@ describe("Auth Tests", () => {
     // create workspace
     await firecloud.createWorkspace(
       workspaceName,
-      "general-dev-billing-account",
-      "HAMMER_Jest"
+      "HAMMER_Jest",
+      "general-dev-billing-account"
     );
 
     // add users

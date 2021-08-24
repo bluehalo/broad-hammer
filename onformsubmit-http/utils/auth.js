@@ -21,6 +21,19 @@ class Auth {
     this._token = undefined;
   }
 
+  get credsFile() {
+    return this._credsFile;
+  }
+  get token() {
+    return this._token;
+  }
+
+  /** Reads client_email from credsFile */
+  get clientEmail() {
+    const creds = require(`../${this._credsFile}`);
+    return creds.client_email;
+  }
+
   /**
    * Requests Google's OAuth2 to get a token
    * @returns {Promise<string>} The access token
@@ -46,16 +59,6 @@ class Auth {
       throw new Error(e);
     }
   };
-
-  /** Reads client_email from credsFile */
-  clientEmail = () => {
-    const creds = require(`../${this._credsFile}`);
-    return creds.client_email;
-  };
-
-  // Getters
-  credsFile = () => this._credsFile;
-  token = () => this._token;
 }
 
 module.exports = Auth;
