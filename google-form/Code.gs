@@ -4,6 +4,8 @@
 // TODO: replace this placeholder with your URL
 const URL =
   "https://us-east4-gcp-testing-308520.cloudfunctions.net/onFormSubmit";
+// DEV: run `gcloud auth print-identity-token --impersonate-service-account="${SERVICE_ACCOUNT_EMAIL}"`
+const HAMMER_APPSCRIPT_IDENTITY_TOKEN = "";
 
 function onSubmit(event) {
   // The event is a FormResponse object:
@@ -35,7 +37,7 @@ function onSubmit(event) {
 
   // Create auth token
   const headers = {
-    Authorization: `Bearer ${ScriptApp.getIdentityToken()}`,
+    Authorization: `Bearer ${HAMMER_APPSCRIPT_IDENTITY_TOKEN}`,
   };
 
   // Create payload with submission data
@@ -47,10 +49,15 @@ function onSubmit(event) {
     responses: JSON.stringify(responses),
   };
 
+  console.log(payload);
+
   // Post the payload as JSON to our Cloud Function
-  UrlFetchApp.fetch(URL, {
+  const response = UrlFetchApp.fetch(URL, {
+    muteHttpExceptions: true,
     headers: headers,
     method: "post",
     payload: payload,
   });
+
+  console.log(response.getContentText());
 }
