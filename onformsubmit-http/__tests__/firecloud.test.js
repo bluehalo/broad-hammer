@@ -26,11 +26,13 @@ describe("Firecloud Tests", () => {
 
   it("should test env variables are loaded properly", () => {
     const firecloud = new Firecloud(axios);
-    expect(firecloud.DEFAULT_TEMPLATE_NAMESPACE).toBe("anvil-dev-fhir2");
-    expect(firecloud.DEFAULT_TEMPLATE_WORKSPACE).toBe(
-      "Asymmetrik_Hammer_Template"
+    expect(firecloud.DEFAULT_TEMPLATE_NAMESPACE).toBe(
+      "general-dev-billing-account"
     );
-    expect(firecloud.DEFAULT_BILLING_PROJECT).toBe("anvil-dev-fhir2");
+    expect(firecloud.DEFAULT_TEMPLATE_WORKSPACE).toBe("HAMMER_Template");
+    expect(firecloud.DEFAULT_BILLING_PROJECT).toBe(
+      "general-dev-billing-account"
+    );
   });
 
   it("should make request to /api/groups", async () => {
@@ -101,7 +103,7 @@ describe("Firecloud Tests", () => {
         name: workspaceName,
         authorizationDomain: [
           { membersGroupName: "Auth_HAMMER_Testing" },
-          { membersGroupName: "Auth_Asymmetrik_Hammer" },
+          { membersGroupName: "Auth_HAMMER_Testing" },
         ],
         namespace: "general-dev-billing-account",
         copyFilesWithPrefix: "notebooks/",
