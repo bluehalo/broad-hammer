@@ -43,13 +43,10 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: Setup gcloud
-        env:
-          GCP_PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
-          GCP_SA_KEY: ${{ secrets.GCP_SA_KEY }}
         uses: google-github-actions/setup-gcloud@master
         with:
-          project_id: "$GCP_PROJECT_ID"
-          service_account_key: "$GCP_SA_KEY"
+          project_id: "$PROJECT_ID"
+          service_account_key: "$PRIVATE_KEY"
           export_default_credentials: true
 
       - name: Generate creds.json
