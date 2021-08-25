@@ -2,7 +2,10 @@
 name: Deploy onFormSubmit
 
 # TODO: change this to your deployment strategy (e.g. on release)
-on: push
+on:
+  push:
+    branches:
+      - master
 
 env:
   GITHUB_SHA: ${{ github.sha }}
