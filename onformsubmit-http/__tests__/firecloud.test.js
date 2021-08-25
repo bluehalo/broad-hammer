@@ -24,6 +24,7 @@ describe("Firecloud Tests", () => {
     jest.clearAllMocks();
   });
 
+  // DEV: these will need to be changed before prod
   it("should test env variables are loaded properly", () => {
     const firecloud = new Firecloud(axios);
     expect(firecloud.DEFAULT_TEMPLATE_NAMESPACE).toBe("anvil-dev-fhir2");
@@ -101,7 +102,7 @@ describe("Firecloud Tests", () => {
         name: workspaceName,
         authorizationDomain: [
           { membersGroupName: "Auth_HAMMER_Testing" },
-          { membersGroupName: "Auth_Asymmetrik_Hammer" },
+          { membersGroupName: `${process.env.TEMPLATE_AUTH_DOMAIN}` },
         ],
         namespace: "general-dev-billing-account",
         copyFilesWithPrefix: "notebooks/",

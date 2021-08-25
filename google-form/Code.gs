@@ -47,10 +47,15 @@ function onSubmit(event) {
     responses: JSON.stringify(responses),
   };
 
+  console.log(payload);
+
   // Post the payload as JSON to our Cloud Function
-  UrlFetchApp.fetch(URL, {
+  const response = UrlFetchApp.fetch(URL, {
+    muteHttpExceptions: true,
     headers: headers,
     method: "post",
     payload: payload,
   });
+
+  console.log(response.getContentText());
 }
