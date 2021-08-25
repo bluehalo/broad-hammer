@@ -2,14 +2,16 @@
   "name": "onformsubmit-http",
   "version": "0.0.1",
   "dependencies": {
+    "@google-cloud/logging-winston": "^4.1.0",
     "@google-cloud/storage": "^5.12.0",
     "axios": "^0.21.1",
+    "dotenv": "^10.0.0",
     "googleapis": "^81.0.0",
-    "dotenv": "^10.0.0"
+    "winston": "^3.3.3"
   },
   "main": "index.js",
   "scripts": {
-    "test": "jest . --coverage",
+    "test": "jest . --coverage --detectOpenHandles",
     "start": "source .env.dev && npx functions-framework --target=onFormSubmit",
     "sonar": "npx sonar-scanner -Dsonar.projectKey=Hammer -Dsonar.sources=. -Dsonar.host.url=http://localhost:9000 -Dsonar.login=9ef90bee0142f601c3c262e2b051eb76a661415d"
   },

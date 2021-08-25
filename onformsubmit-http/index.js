@@ -2,6 +2,7 @@
  * Handles Google Form submission answers
  */
 const axios = require("axios").default;
+const logger = require("./utils/logger");
 
 const Auth = require("./utils/auth");
 const Submission = require("./utils/submission");
@@ -37,6 +38,7 @@ const processCohort = async (cohort, firecloud) => {
       "OWNER"
     );
   } catch (e) {
+    logger.error("INDEX >>> processCohort");
     throw new Error(e);
   }
 };
@@ -59,7 +61,7 @@ exports.onFormSubmit = async (req, res) => {
       "Authorization"
     ] = `Bearer ${bearerToken}`;
   } catch (e) {
-    console.error(`[500] Failed to initialize Auth: ${e}`);
+    logger.error(`[500] Failed to initialize Auth: ${e}`);
     return res.status(500).send(`[Internal Server Error] ${e}`);
   }
 
@@ -78,7 +80,7 @@ exports.onFormSubmit = async (req, res) => {
     dataModel = submission.dataModel;
     cohortMap = submission.cohortMap;
   } catch (e) {
-    console.error(`[400] Failed to parse submission message: ${e}`);
+    logger.error(`[400] Failed to parse submission message: ${e}`);
     return res.status(400).send(`[Bad Request] ${e}`);
   }
 
@@ -97,7 +99,7 @@ exports.onFormSubmit = async (req, res) => {
       cohorts.push(cohort);
     });
   } catch (e) {
-    console.error(`[400] Failed to parse cohort map: ${e}`);
+    logger.error(`[400] Failed to parse cohort map: ${e}`);
     return res.status(400).send(`[Bad Request] ${e}`);
   }
 
@@ -108,12 +110,12 @@ exports.onFormSubmit = async (req, res) => {
       await processCohort(cohort, firecloud);
     }
   } catch (e) {
-    console.error(`[500] Failed to process cohorts: ${e}`);
+    logger.error(`[500] Failed to process cohorts: ${e}`);
     return res.status(500).send(`[Internal Server Error] ${e}`);
   }
 
   // TODO: Replace with meaningful message
   const msg = "Completed Run!";
-  console.log(`[Success] ${msg}`);
+  logger.log(`[Success] ${msg}`);
   return res.status(200).send(`[200] OK: ${msg}`);
 };

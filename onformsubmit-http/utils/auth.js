@@ -3,6 +3,8 @@
  * @module Auth
  */
 const { existsSync } = require("fs");
+const logger = require("./logger");
+
 const google = require("googleapis");
 
 /** Requests and holds tokens */
@@ -15,6 +17,7 @@ class Auth {
     if (existsSync(credsFile)) {
       this._credsFile = credsFile;
     } else {
+      logger.error("AUTH >>> constructor");
       throw new Error(`Creds file ${credsFile} not found`);
     }
 
@@ -56,6 +59,7 @@ class Auth {
       this._token = await googleAuthClient.getAccessToken();
       return this._token;
     } catch (e) {
+      logger.error("AUTH >>> requestAccessToken");
       throw new Error(e);
     }
   };

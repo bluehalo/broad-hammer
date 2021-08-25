@@ -43,7 +43,7 @@ class Submission {
 
       // double check gform data
       if (!this._editLink) {
-        throw new Error();
+        throw new Error("Submission does not contain edit link");
       }
     } catch (e) {
       throw new Error("Submission data malformed");

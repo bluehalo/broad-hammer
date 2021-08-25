@@ -2,6 +2,7 @@
  * Handles Firecloud calls
  * @module Firecloud
  */
+const logger = require("./logger");
 
 /** Sends HTTP requests */
 class Firecloud {
@@ -45,17 +46,21 @@ class Firecloud {
    */
   createGroup = async (groupName) => {
     try {
+      logger.info(`POST /api/groups/${groupName}`);
       await this._http.post(`/api/groups/${groupName}`).then((res) => {
         this._groupEmail = res.data.groupEmail;
       });
     } catch (e) {
+      logger.error("FIRECLOUD >>> createGroup");
       throw new Error(`/api/groups/${groupName} ${e}`);
     }
 
     // if group wasn't created, throw an error
     if (this._groupEmail) {
+      logger.info(`Returned: ${this._groupEmail}`);
       return this._groupEmail;
     } else {
+      logger.error("FIRECLOUD >>> createGroup");
       throw new Error("Group was not created");
     }
   };
@@ -69,8 +74,10 @@ class Firecloud {
    */
   addUserToGroup = async (groupName, userEmail, role = "member") => {
     try {
+      logger.info(`POST /api/groups/${groupName}/${role}/${userEmail}`);
       await this._http.put(`/api/groups/${groupName}/${role}/${userEmail}`);
     } catch (e) {
+      logger.error("FIRECLOUD >>> addUserToGroup");
       throw new Error(`/api/groups/${groupName}/${role}/${userEmail} ${e}`);
     }
   };
@@ -83,8 +90,10 @@ class Firecloud {
    */
   removeUserFromGroup = async (groupName, userEmail, role = "member") => {
     try {
+      logger.info(`DELETE /api/groups/${groupName}/${role}/${userEmail}`);
       await this._http.delete(`/api/groups/${groupName}/${role}/${userEmail}`);
     } catch (e) {
+      logger.error("FIRECLOUD >>> removeUserFromGroup");
       throw new Error(`/api/groups/${groupName}/${role}/${userEmail} ${e}`);
     }
   };
@@ -113,8 +122,12 @@ class Firecloud {
     };
 
     try {
+      logger.info(`POST /api/workspaces`);
+      logger.info(workspaceRequest);
+
       await this._http.post("/api/workspaces", workspaceRequest);
     } catch (e) {
+      logger.error("FIRECLOUD >>> createWorkspace");
       throw new Error(`/api/workspaces ${e}`);
     }
   };
@@ -153,11 +166,17 @@ class Firecloud {
     };
 
     try {
+      logger.info(
+        `POST /api/workspaces/${templateNamespace}/${templateWorkspace}/clone`
+      );
+      logger.info(workspaceRequest);
+
       await this._http.post(
         `/api/workspaces/${templateNamespace}/${templateWorkspace}/clone`,
         workspaceRequest
       );
     } catch (e) {
+      logger.error("FIRECLOUD >>> cloneWorkspace");
       throw new Error(
         `/api/workspaces/${templateNamespace}/${templateWorkspace}/clone ${e}`
       );
@@ -188,11 +207,17 @@ class Firecloud {
     ];
 
     try {
+      logger.info(
+        `PATCH /api/workspaces/${billingProject}/${workspaceName}/acl?inviteUsersNotFound=true`
+      );
+      logger.info(aclRequest);
+
       await this._http.patch(
         `/api/workspaces/${billingProject}/${workspaceName}/acl?inviteUsersNotFound=true`,
         aclRequest
       );
     } catch (e) {
+      logger.error("FIRECLOUD >>> addUserToWorkspace");
       throw new Error(
         `/api/workspaces/${billingProject}/${workspaceName}/acl?inviteUsersNotFound=true ${e}`
       );
@@ -221,11 +246,17 @@ class Firecloud {
     ];
 
     try {
+      logger.info(
+        `PATCH /api/workspaces/${billingProject}/${workspaceName}/acl`
+      );
+      logger.info(aclRemoveRequest);
+
       await this._http.patch(
         `/api/workspaces/${billingProject}/${workspaceName}/acl`,
         aclRemoveRequest
       );
     } catch (e) {
+      logger.error("FIRECLOUD >>> removeUserFromWorkspace");
       throw new Error(
         `/api/workspaces/${billingProject}/${workspaceName}/acl ${e}`
       );
