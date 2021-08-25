@@ -123,7 +123,7 @@ class Firecloud {
 
     try {
       logger.info(`POST /api/workspaces`);
-      logger.info(workspaceRequest);
+      logger.info(JSON.stringify(workspaceRequest));
 
       await this._http.post("/api/workspaces", workspaceRequest);
     } catch (e) {
@@ -169,7 +169,7 @@ class Firecloud {
       logger.info(
         `POST /api/workspaces/${templateNamespace}/${templateWorkspace}/clone`
       );
-      logger.info(workspaceRequest);
+      logger.info(JSON.stringify(workspaceRequest));
 
       await this._http.post(
         `/api/workspaces/${templateNamespace}/${templateWorkspace}/clone`,
@@ -210,7 +210,7 @@ class Firecloud {
       logger.info(
         `PATCH /api/workspaces/${billingProject}/${workspaceName}/acl?inviteUsersNotFound=true`
       );
-      logger.info(aclRequest);
+      logger.info(JSON.stringify(aclRequest));
 
       await this._http.patch(
         `/api/workspaces/${billingProject}/${workspaceName}/acl?inviteUsersNotFound=true`,
@@ -249,7 +249,7 @@ class Firecloud {
       logger.info(
         `PATCH /api/workspaces/${billingProject}/${workspaceName}/acl`
       );
-      logger.info(aclRemoveRequest);
+      logger.info(JSON.stringify(aclRemoveRequest));
 
       await this._http.patch(
         `/api/workspaces/${billingProject}/${workspaceName}/acl`,
