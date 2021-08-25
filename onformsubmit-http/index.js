@@ -15,7 +15,7 @@ const FIRECLOUD_URL = process.env.FIRECLOUD_URL;
 const ADMIN_EMAIL = process.env.ADMIN_EMAIL;
 const BILLING_PROJECT = process.env.DEFAULT_BILLING_PROJECT;
 
-const processCohort = async (cohort, firecloud) => {
+const processCohort = async (cohort, firecloud, emails) => {
   try {
     const workspaceName = cohort.workspaceName;
     const authDomain = cohort.authDomain;
@@ -26,6 +26,9 @@ const processCohort = async (cohort, firecloud) => {
 
     // add users to auth domain
     await firecloud.addUserToGroup(authDomain, ADMIN_EMAIL, "admin");
+    for (let email in emails) {
+      await firecloud.addUserToGroup(authDomain, email, "member");
+    }
 
     // clone workspace from template
     await firecloud.cloneWorkspace(workspaceName, authDomain, attributes);
@@ -103,11 +106,15 @@ exports.onFormSubmit = async (req, res) => {
     return res.status(400).send(`[Bad Request] ${e}`);
   }
 
+  // parse email submissions
+  const emails = [];
+  emails.push(contactEmail);
+
   // pass each cohort to firecloud to be processed
   const firecloud = new Firecloud(httpClient);
   try {
     for (const cohort of cohorts) {
-      await processCohort(cohort, firecloud);
+      await processCohort(cohort, firecloud, emails);
     }
   } catch (e) {
     logger.error(`[500] Failed to process cohorts: ${e}`);
