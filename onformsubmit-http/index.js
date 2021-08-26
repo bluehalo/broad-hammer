@@ -26,9 +26,9 @@ const processCohort = async (cohort, firecloud, emails) => {
 
     // add users to auth domain
     await firecloud.addUserToGroup(authDomain, ADMIN_EMAIL, "admin");
-    for (let email in emails) {
-      await firecloud.addUserToGroup(authDomain, email, "member");
-    }
+    emails.split("\n").forEach(async (email) => {
+      await firecloud.addUserToGroup(authDomain, email, "admin");
+    });
 
     // clone workspace from template
     await firecloud.cloneWorkspace(workspaceName, authDomain, attributes);
@@ -38,6 +38,12 @@ const processCohort = async (cohort, firecloud, emails) => {
       workspaceName,
       BILLING_PROJECT,
       ADMIN_EMAIL,
+      "OWNER"
+    );
+    await firecloud.addUserToWorkspace(
+      workspaceName,
+      BILLING_PROJECT,
+      firecloud.groupEmail,
       "OWNER"
     );
   } catch (e) {
@@ -106,15 +112,12 @@ exports.onFormSubmit = async (req, res) => {
     return res.status(400).send(`[Bad Request] ${e}`);
   }
 
-  // parse email submissions
-  const emails = [];
-  emails.push(contactEmail);
-
   // pass each cohort to firecloud to be processed
   const firecloud = new Firecloud(httpClient);
   try {
+    submission.saveToFile();
     for (const cohort of cohorts) {
-      await processCohort(cohort, firecloud, emails);
+      await processCohort(cohort, firecloud, submission.studyPersonnel);
     }
   } catch (e) {
     logger.error(`[500] Failed to process cohorts: ${e}`);
@@ -123,6 +126,6 @@ exports.onFormSubmit = async (req, res) => {
 
   // TODO: Replace with meaningful message
   const msg = "Completed Run!";
-  logger.log(`[Success] ${msg}`);
+  logger.info(`[Success] ${msg}`);
   return res.status(200).send(`[200] OK: ${msg}`);
 };

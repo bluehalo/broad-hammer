@@ -78,6 +78,9 @@ class Submission {
       return this._json["Choose the data model you wish to use"];
     }
   }
+  get studyPersonnel() {
+    return this._json["Study Submission Personnel"];
+  }
   get cohortMap() {
     return this._cohortMap;
   }
