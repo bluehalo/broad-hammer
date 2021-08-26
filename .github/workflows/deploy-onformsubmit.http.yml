@@ -2,7 +2,10 @@
 name: Deploy onFormSubmit
 
 # TODO: change this to your deployment strategy (e.g. on release)
-on: push
+on:
+  push:
+    branches:
+      - master
 
 env:
   GITHUB_SHA: ${{ github.sha }}
@@ -63,4 +66,4 @@ jobs:
             --trigger-http \
             --region=${{ env.GCP_REGION }} \
             --runtime=nodejs12 \
-            --memory=128MB \
+            --memory=1024MB \

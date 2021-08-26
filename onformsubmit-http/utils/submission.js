@@ -43,7 +43,7 @@ class Submission {
 
       // double check gform data
       if (!this._editLink) {
-        throw new Error();
+        throw new Error("Submission does not contain edit link");
       }
     } catch (e) {
       throw new Error("Submission data malformed");
@@ -77,6 +77,9 @@ class Submission {
     } else {
       return this._json["Choose the data model you wish to use"];
     }
+  }
+  get studyPersonnel() {
+    return this._json["Study Submission Personnel"];
   }
   get cohortMap() {
     return this._cohortMap;

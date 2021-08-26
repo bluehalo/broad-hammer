@@ -29,4 +29,5 @@ Complete this setup on the account that you want error messages to report to.
 - Responses are parsed based on the question name
   You may add descriptions to assist the users, but changes to the questions will require code refactoring
 - Due to size limitations, submissions with more than 8 cohorts will require manual review
-- After workspace creation, data wrangler should clone the workspace and remove the `---` authorization domain
+- After workspace creation, data wrangler should clone the workspace and manually review the information
+- The form requires users to have access to the GCP account through IAM roles or they will not be able to create workspaces

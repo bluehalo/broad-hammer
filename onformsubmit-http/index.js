@@ -2,6 +2,7 @@
  * Handles Google Form submission answers
  */
 const axios = require("axios").default;
+const logger = require("./utils/logger");
 
 const Auth = require("./utils/auth");
 const Submission = require("./utils/submission");
@@ -14,7 +15,7 @@ const FIRECLOUD_URL = process.env.FIRECLOUD_URL;
 const ADMIN_EMAIL = process.env.ADMIN_EMAIL;
 const BILLING_PROJECT = process.env.DEFAULT_BILLING_PROJECT;
 
-const processCohort = async (cohort, firecloud) => {
+const processCohort = async (cohort, firecloud, emails) => {
   try {
     const workspaceName = cohort.workspaceName;
     const authDomain = cohort.authDomain;
@@ -25,6 +26,9 @@ const processCohort = async (cohort, firecloud) => {
 
     // add users to auth domain
     await firecloud.addUserToGroup(authDomain, ADMIN_EMAIL, "admin");
+    emails.split("\n").forEach(async (email) => {
+      await firecloud.addUserToGroup(authDomain, email, "admin");
+    });
 
     // clone workspace from template
     await firecloud.cloneWorkspace(workspaceName, authDomain, attributes);
@@ -36,7 +40,14 @@ const processCohort = async (cohort, firecloud) => {
       ADMIN_EMAIL,
       "OWNER"
     );
+    await firecloud.addUserToWorkspace(
+      workspaceName,
+      BILLING_PROJECT,
+      firecloud.groupEmail,
+      "OWNER"
+    );
   } catch (e) {
+    logger.error("INDEX >>> processCohort");
     throw new Error(e);
   }
 };
@@ -59,7 +70,7 @@ exports.onFormSubmit = async (req, res) => {
       "Authorization"
     ] = `Bearer ${bearerToken}`;
   } catch (e) {
-    console.error(`[500] Failed to initialize Auth: ${e}`);
+    logger.error(`[500] Failed to initialize Auth: ${e}`);
     return res.status(500).send(`[Internal Server Error] ${e}`);
   }
 
@@ -78,7 +89,7 @@ exports.onFormSubmit = async (req, res) => {
     dataModel = submission.dataModel;
     cohortMap = submission.cohortMap;
   } catch (e) {
-    console.error(`[400] Failed to parse submission message: ${e}`);
+    logger.error(`[400] Failed to parse submission message: ${e}`);
     return res.status(400).send(`[Bad Request] ${e}`);
   }
 
@@ -97,7 +108,7 @@ exports.onFormSubmit = async (req, res) => {
       cohorts.push(cohort);
     });
   } catch (e) {
-    console.error(`[400] Failed to parse cohort map: ${e}`);
+    logger.error(`[400] Failed to parse cohort map: ${e}`);
     return res.status(400).send(`[Bad Request] ${e}`);
   }
 
@@ -105,15 +116,15 @@ exports.onFormSubmit = async (req, res) => {
   const firecloud = new Firecloud(httpClient);
   try {
     for (const cohort of cohorts) {
-      await processCohort(cohort, firecloud);
+      await processCohort(cohort, firecloud, submission.studyPersonnel);
     }
   } catch (e) {
-    console.error(`[500] Failed to process cohorts: ${e}`);
+    logger.error(`[500] Failed to process cohorts: ${e}`);
     return res.status(500).send(`[Internal Server Error] ${e}`);
   }
 
   // TODO: Replace with meaningful message
   const msg = "Completed Run!";
-  console.log(`[Success] ${msg}`);
+  logger.info(`[Success] ${msg}`);
   return res.status(200).send(`[200] OK: ${msg}`);
 };
