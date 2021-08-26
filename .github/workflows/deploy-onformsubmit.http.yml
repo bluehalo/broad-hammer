@@ -64,4 +64,4 @@ jobs:
             --trigger-http \
             --region=${{ env.GCP_REGION }} \
             --runtime=nodejs12 \
-            --memory=128MB \
+            --memory=1028MB \
