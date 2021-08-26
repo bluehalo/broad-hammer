@@ -115,7 +115,6 @@ exports.onFormSubmit = async (req, res) => {
   // pass each cohort to firecloud to be processed
   const firecloud = new Firecloud(httpClient);
   try {
-    submission.saveToFile();
     for (const cohort of cohorts) {
       await processCohort(cohort, firecloud, submission.studyPersonnel);
     }
