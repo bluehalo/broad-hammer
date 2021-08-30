@@ -123,8 +123,7 @@ exports.onFormSubmit = async (req, res) => {
     return res.status(500).send(`[Internal Server Error] ${e}`);
   }
 
-  // TODO: Replace with meaningful message
-  const msg = "Completed Run!";
+  const msg = "Workspaces Created!";
   logger.info(`[Success] ${msg}`);
   return res.status(200).send(`[200] OK: ${msg}`);
 };
