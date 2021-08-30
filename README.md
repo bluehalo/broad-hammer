@@ -50,3 +50,11 @@ Implement the Google Form **after** implementing the Cloud Function (the form re
 - The `scripts` folder contains code used by GitHub Actions to create the `env` and `creds.json` file
 - The `dataModels` contains `tsv` files for reference, but not currently used
 - [SonarQube](https://www.sonarqube.org/) is used for code quality checks, but must be reconfigured to work locally
+- After workspace creation, data wrangler should clone the workspace and manually review the information
+
+## Code Limitations
+
+- The number of cohorts question is not compared to the number of cohorts submitted.
+  This question _may_ be removed with no negative effects on the code.
+- Custom data models are not supported in this iteration of the code
+- Users are expected to create their own data models and upload them to Terra manually
