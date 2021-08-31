@@ -4,8 +4,6 @@
 
 ## Getting Started
 
-**NOTE: Ensure the form is not inside of a shared Google Drive**
-
 Google Forms have a Script Editor where you need to inject the code from the `google-form`.
 The code is in `gs` format, which is loosely based on JavaScript.
 The service account will be automatically created [`appsdev-apps-dev-script-auth@system.gserviceaccount.com`](https://developers.google.com/apps-script/guides/cloud-platform-projects#default_cloud_platform_projects) and used for deployment.
@@ -28,6 +26,5 @@ Complete this setup on the account that you want error messages to report to.
 
 - Responses are parsed based on the question name
   You may add descriptions to assist the users, but changes to the questions will require code refactoring
-- Due to size limitations, submissions with more than 8 cohorts will require manual review
-- After workspace creation, data wrangler should clone the workspace and manually review the information
-- The form requires users to have access to the GCP account through IAM roles or they will not be able to create workspaces
+- Due to Google Form limitations, submissions with more than 8 cohorts will require manual review
+- The form requires submitters to have access to the GCP project through IAM roles or they will not be able to create workspaces
