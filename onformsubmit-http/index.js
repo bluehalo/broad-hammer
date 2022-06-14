@@ -13,7 +13,7 @@ const Cohort = require("./utils/cohort");
 const SERVICE_ACCOUNT_KEY = process.env.SERVICE_ACCOUNT_KEY;
 const FIRECLOUD_URL = process.env.FIRECLOUD_URL;
 const ADMIN_EMAIL = process.env.ADMIN_EMAIL;
-const DEV_EMAIL = AnVIL_Devs@firecloud.org;
+const DEV_EMAIL = 'AnVIL_Devs@firecloud.org';
 const BILLING_PROJECT = process.env.DEFAULT_BILLING_PROJECT;
 
 const processCohort = async (cohort, firecloud, emails) => {
