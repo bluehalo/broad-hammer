@@ -12,7 +12,8 @@ const Cohort = require("./utils/cohort");
 // pull env vars
 const SERVICE_ACCOUNT_KEY = process.env.SERVICE_ACCOUNT_KEY;
 const FIRECLOUD_URL = process.env.FIRECLOUD_URL;
-const ADMIN_EMAIL = process.env.ADMIN_EMAIL;
+const = process.env.ADMIN_EMAIL;
+const DEV_EMAIL = AnVIL_Devs@firecloud.org;
 const BILLING_PROJECT = process.env.DEFAULT_BILLING_PROJECT;
 
 const processCohort = async (cohort, firecloud, emails) => {
@@ -26,6 +27,7 @@ const processCohort = async (cohort, firecloud, emails) => {
 
     // add users to auth domain
     await firecloud.addUserToGroup(authDomain, ADMIN_EMAIL, "admin");
+    await firecloud.addUserToGroup(authDomain, DEV_EMAIL, "admin");
     emails.split("\n").forEach(async (email) => {
       await firecloud.addUserToGroup(authDomain, email, "admin");
     });
@@ -33,11 +35,17 @@ const processCohort = async (cohort, firecloud, emails) => {
     // clone workspace from template
     await firecloud.cloneWorkspace(workspaceName, authDomain, attributes);
 
-    // add admin and auth domain to group
+    // add admin, dev, and auth domain to group
     await firecloud.addUserToWorkspace(
       workspaceName,
       BILLING_PROJECT,
       ADMIN_EMAIL,
+      "OWNER"
+    );
+    await firecloud.addUserToWorkspace(
+      workspaceName,
+      BILLING_PROJECT,
+      DEV_EMAIL,
       "OWNER"
     );
     await firecloud.addUserToWorkspace(
